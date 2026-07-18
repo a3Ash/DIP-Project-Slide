@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <title>Image Compression — CSE 4106</title>
@@ -8,8 +9,16 @@
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
       --bg: oklch(14% 0.02 280);
       --accent: oklch(70% 0.25 330);
       --accent2: oklch(65% 0.25 280);
@@ -21,212 +30,767 @@
       --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
       --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
       /* Refined, multi-layered shadow for premium depth */
-      --glass-shadow: 0 16px 40px rgba(0,0,0,0.5);
-      --glass-shadow-hover: 0 24px 64px rgba(0,0,0,0.6), 0 0 30px rgba(217,70,239,0.2);
+      --glass-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+      --glass-shadow-hover: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 30px rgba(217, 70, 239, 0.2);
       --glass-bg: rgba(0, 0, 0, 0.55);
       --glass-border: 1px solid rgba(255, 255, 255, 0.12);
       --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.4);
       --glass-blur: blur(24px);
     }
-    html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
-    
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased
+    }
+
     /* Ambient Background Motion */
     @keyframes breathe {
-      0%, 100% { transform: scale(1) translate(0, 0); opacity: 0.8; }
-      50% { transform: scale(1.1) translate(-2%, 2%); opacity: 1; }
+
+      0%,
+      100% {
+        transform: scale(1) translate(0, 0);
+        opacity: 0.8;
+      }
+
+      50% {
+        transform: scale(1.1) translate(-2%, 2%);
+        opacity: 1;
+      }
     }
+
     @keyframes drift {
-      0% { transform: translate(calc(-50% - 40vw), -50%); }
-      50% { transform: translate(calc(-50% + 40vw), -50%); }
-      100% { transform: translate(calc(-50% - 40vw), -50%); }
+      0% {
+        transform: translate(calc(-50% - 40vw), -50%);
+      }
+
+      50% {
+        transform: translate(calc(-50% + 40vw), -50%);
+      }
+
+      100% {
+        transform: translate(calc(-50% - 40vw), -50%);
+      }
     }
+
     @keyframes meshShift {
-      0% { transform: translate(0%, 0%) scale(1); }
-      33% { transform: translate(-5%, -10%) scale(1.05); }
-      66% { transform: translate(-10%, 5%) scale(0.95); }
-      100% { transform: translate(-5%, -5%) scale(1.1); }
+      0% {
+        transform: translate(0%, 0%) scale(1);
+      }
+
+      33% {
+        transform: translate(-5%, -10%) scale(1.05);
+      }
+
+      66% {
+        transform: translate(-10%, 5%) scale(0.95);
+      }
+
+      100% {
+        transform: translate(-5%, -5%) scale(1.1);
+      }
     }
-    body::before{
-      content:'';position:fixed;top:-20%;left:-20%;width:140%;height:140%;z-index:0;pointer-events:none;
-      background: 
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -20%;
+      left: -20%;
+      width: 140%;
+      height: 140%;
+      z-index: 0;
+      pointer-events: none;
+      background:
         radial-gradient(circle at 30% 40%, oklch(70% 0.25 330 / 0.25) 0%, transparent 45%),
         radial-gradient(circle at 70% 60%, oklch(55% 0.28 260 / 0.25) 0%, transparent 45%),
         radial-gradient(circle at 50% 70%, oklch(65% 0.25 280 / 0.20) 0%, transparent 45%);
       animation: meshShift 25s ease-in-out infinite alternate;
       /* Optimized: No filter: blur() on the background layer, and uses hardware-accelerated transform */
     }
+
     /* Ghost text for depth */
-    body::after{
-      content:'CSE 4106';position:fixed;top:40%;left:50%;transform:translate(-50%, -50%);
-      font-family:'Outfit', sans-serif;font-size:25vw;font-weight:800;color:oklch(100% 0 0 / 0.035);z-index:0;pointer-events:none;
-      letter-spacing:-0.03em;animation: drift 120s linear infinite;
+    body::after {
+      content: 'CSE 4106';
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Outfit', sans-serif;
+      font-size: 25vw;
+      font-weight: 800;
+      color: oklch(100% 0 0 / 0.035);
+      z-index: 0;
+      pointer-events: none;
+      letter-spacing: -0.03em;
+      animation: drift 120s linear infinite;
     }
-    
-    .deck{position:relative;width:100vw;height:100vh;z-index:1}
-    
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1
+    }
+
     /* VERTICAL SLIDING TIMELINE LOGIC */
-    .slide{
-      position:absolute;inset:0;display:flex;flex-direction:column;
-      padding:4.5vh 6vw;opacity:0;pointer-events:none;
-      transition:transform 0.8s var(--ease-in-out), opacity 0.7s var(--ease-out);
-      transform:translateY(100%);
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 4.5vh 6vw;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.8s var(--ease-in-out), opacity 0.7s var(--ease-out);
+      transform: translateY(100%);
     }
-    .slide.past { transform:translateY(-100%); opacity:0; }
-    .slide.active { opacity:1; pointer-events:auto; z-index:2; transform:translateY(0); }
-    .slide.future { transform:translateY(100%); opacity:0; }
-    
-    .slide .anim{opacity:0;transform:translateY(30px) scale(0.98);transition:all 0.7s var(--ease-out)}
-    .slide.active .anim{opacity:1;transform:translateY(0) scale(1)}
-    
+
+    .slide.past {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      z-index: 2;
+      transform: translateY(0);
+    }
+
+    .slide.future {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+
+    .slide .anim {
+      opacity: 0;
+      transform: translateY(30px) scale(0.98);
+      transition: all 0.7s var(--ease-out)
+    }
+
+    .slide.active .anim {
+      opacity: 1;
+      transform: translateY(0) scale(1)
+    }
+
     /* Micro-typography */
-    .slide-num{position:absolute;top:2vh;right:3vw;font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;color:var(--muted);opacity:.5;letter-spacing:0.2em;text-transform:uppercase}
-    
-    h1{font-family:'Outfit',sans-serif;font-size:clamp(34px,4.8vw,84px);font-weight:800;color:#FFFFFF;line-height:1.1;letter-spacing:-0.03em;text-shadow:0 12px 40px rgba(0,0,0,0.6)}
-    h2{font-family:'Outfit',sans-serif;font-size:clamp(24px,3vw,52px);font-weight:700;color:#F8FAFC;margin-bottom:1.5vh;letter-spacing:-0.02em;text-shadow:0 4px 20px rgba(0,0,0,0.5)}
-    p,li{font-size:clamp(15px,1.8vw,36px);line-height:1.6;margin-bottom:.8vh;color:var(--text);letter-spacing:-0.01em;}
-    .sub{font-size:clamp(12px,1.4vw,26px);color:var(--muted)}
-    .highlight{color:var(--accent);font-weight:600}
-    code:not([class*="language-"]){font-family:'JetBrains Mono',monospace;color:var(--accent);background:rgba(217,70,239,.06);border:1px solid rgba(217,70,239,.15);padding:3px 8px;border-radius:6px;font-size:.85em;box-shadow:inset 0 1px 0 rgba(255,255,255,0.05)}
-    strong{color:#FFFFFF;font-weight:600}
-    
-    .center{align-items:center;justify-content:center;text-align:center}
-    .flex-row{display:flex;gap:2vw;flex:1;min-height:0;width:100%}
-    .col{flex:1;display:flex;flex-direction:column;min-height:0;min-width:0}
-    .col-wide{flex:1.3}
-    
+    .slide-num {
+      position: absolute;
+      top: 2vh;
+      right: 3vw;
+      font-family: 'Outfit', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      opacity: .5;
+      letter-spacing: 0.2em;
+      text-transform: uppercase
+    }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(34px, 4.8vw, 84px);
+      font-weight: 800;
+      color: #FFFFFF;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      text-shadow: 0 12px 40px rgba(0, 0, 0, 0.6)
+    }
+
+    h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(24px, 3vw, 52px);
+      font-weight: 700;
+      color: #F8FAFC;
+      margin-bottom: 1.5vh;
+      letter-spacing: -0.02em;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5)
+    }
+
+    p,
+    li {
+      font-size: clamp(15px, 1.8vw, 36px);
+      line-height: 1.6;
+      margin-bottom: .8vh;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .sub {
+      font-size: clamp(12px, 1.4vw, 26px);
+      color: var(--muted)
+    }
+
+    .highlight {
+      color: var(--accent);
+      font-weight: 600
+    }
+
+    code:not([class*="language-"]) {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent);
+      background: rgba(217, 70, 239, .06);
+      border: 1px solid rgba(217, 70, 239, .15);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: .85em;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05)
+    }
+
+    strong {
+      color: #FFFFFF;
+      font-weight: 600
+    }
+
+    .center {
+      align-items: center;
+      justify-content: center;
+      text-align: center
+    }
+
+    .flex-row {
+      display: flex;
+      gap: 2vw;
+      flex: 1;
+      min-height: 0;
+      width: 100%
+    }
+
+    .col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      min-width: 0
+    }
+
+    .col-wide {
+      flex: 1.3
+    }
+
     /* Interactive Glass Cards */
-    .img-box{flex:1;display:flex;align-items:center;justify-content:center;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-radius:20px;padding:1.2vw;min-height:0;border:var(--glass-border);box-shadow:var(--glass-shadow);overflow:hidden;position:relative;transition:transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out), border-color 0.5s var(--ease-out)}
-    .img-box::before{content:'';position:absolute;inset:0;border-radius:20px;box-shadow:var(--glass-inset);pointer-events:none;transition:box-shadow 0.5s var(--ease-out)}
-    .img-box:hover{transform:translateY(-3px) scale(1.01);box-shadow:var(--glass-shadow-hover);border-color:rgba(255,255,255,0.15)}
-    .img-box img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px}
-    
-    .svg-box{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-radius:20px;padding:2vw;margin-top:2vh;border:var(--glass-border);box-shadow:var(--glass-shadow);position:relative;overflow:hidden}
-    .svg-box::before{content:'';position:absolute;inset:0;border-radius:20px;box-shadow:var(--glass-inset);pointer-events:none}
-    
-    .title-box{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-radius:24px;padding:6vh 4vw;border:var(--glass-border);box-shadow:var(--glass-shadow);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:80%}
-    .title-box::before{content:'';position:absolute;inset:0;border-radius:24px;box-shadow:var(--glass-inset);pointer-events:none}
-    
-    pre[class*="language-"]{background:var(--glass-bg)!important;backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);border-radius:16px!important;padding:1.4vw!important;font-size:clamp(10px,1.1vw,18px)!important;line-height:1.65!important;margin-top:.8vh;overflow-x:auto;box-shadow:var(--glass-shadow);position:relative;transition:transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out), border-color 0.5s var(--ease-out)}
-    pre[class*="language-"]::before{content:'';position:absolute;inset:0;border-radius:16px;box-shadow:var(--glass-inset);pointer-events:none;}
-    pre[class*="language-"]:hover{transform:translateY(-3px) scale(1.01);box-shadow:var(--glass-shadow-hover);border-color:rgba(255,255,255,0.15)}
-    .code-label{display:inline-flex;align-items:center;gap:6px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;color:var(--accent);margin-bottom:.5vh;letter-spacing:0.15em;text-transform:uppercase}
-    
-    table{width:100%;border-collapse:separate;border-spacing:0;margin-top:1.5vh;border-radius:16px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);box-shadow:var(--glass-shadow);position:relative;overflow:hidden}
-    table::before{content:'';position:absolute;inset:0;border-radius:16px;box-shadow:var(--glass-inset);pointer-events:none;}
-    th,td{padding:1.2vh 1.2vw;text-align:center;font-size:clamp(12px,1.6vw,30px);border-bottom:1px solid rgba(255,255,255,.05)}
-    th{background:rgba(255,255,255,0.02);color:#F1F5F9;font-weight:600;font-family:'Outfit',sans-serif;letter-spacing:0.02em}
-    td{background:transparent}
-    .red{color:var(--red);font-weight:600}.green{color:var(--green);font-weight:600}.amber{color:var(--amber);font-weight:600}
-    
-    .callout{margin-top:1.5vh;background:linear-gradient(160deg, rgba(217,70,239,0.06) 0%, rgba(217,70,239,0.01) 100%);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);padding:2.5vh 2vw;border-radius:16px;border:var(--glass-border);position:relative;box-shadow:var(--glass-shadow);transition:transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out), border-color 0.5s var(--ease-out)}
-    .callout::before{content:'';position:absolute;inset:0;border-radius:16px;box-shadow:inset 0 1px 0 rgba(217,70,239,0.3), inset 0 0 30px rgba(217,70,239,0.05);pointer-events:none}
-    .callout:hover{transform:translateY(-2px) scale(1.005);box-shadow:var(--glass-shadow-hover);border-color:rgba(217,70,239,0.2)}
-    
-    .stat-pill{display:inline-flex;align-items:center;gap:8px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);padding:.6vh 1.4vw;border-radius:999px;font-size:clamp(11px,1.3vw,24px);font-weight:600;box-shadow:var(--glass-inset), 0 8px 24px rgba(0,0,0,0.3);letter-spacing:-0.01em}
-    
+    .img-box {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-radius: 20px;
+      padding: 1.2vw;
+      min-height: 0;
+      border: var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out), border-color 0.5s var(--ease-out)
+    }
+
+    .img-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      box-shadow: var(--glass-inset);
+      pointer-events: none;
+      transition: box-shadow 0.5s var(--ease-out)
+    }
+
+    .img-box:hover {
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: var(--glass-shadow-hover);
+      border-color: rgba(255, 255, 255, 0.15)
+    }
+
+    .img-box img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 8px
+    }
+
+    .svg-box {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-radius: 20px;
+      padding: 2vw;
+      margin-top: 2vh;
+      border: var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      position: relative;
+      overflow: hidden
+    }
+
+    .svg-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      box-shadow: var(--glass-inset);
+      pointer-events: none
+    }
+
+    .title-box {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-radius: 24px;
+      padding: 6vh 4vw;
+      border: var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 80%
+    }
+
+    .title-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      box-shadow: var(--glass-inset);
+      pointer-events: none
+    }
+
+    pre[class*="language-"] {
+      background: var(--glass-bg) !important;
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: var(--glass-border);
+      border-radius: 16px !important;
+      padding: 1.4vw !important;
+      font-size: clamp(10px, 1.1vw, 18px) !important;
+      line-height: 1.65 !important;
+      margin-top: .8vh;
+      overflow-x: auto;
+      box-shadow: var(--glass-shadow);
+      position: relative;
+      transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out), border-color 0.5s var(--ease-out)
+    }
+
+    pre[class*="language-"]::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      box-shadow: var(--glass-inset);
+      pointer-events: none;
+    }
+
+    pre[class*="language-"]:hover {
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: var(--glass-shadow-hover);
+      border-color: rgba(255, 255, 255, 0.15)
+    }
+
+    .code-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: .5vh;
+      letter-spacing: 0.15em;
+      text-transform: uppercase
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 1.5vh;
+      border-radius: 16px;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      position: relative;
+      overflow: hidden
+    }
+
+    table::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      box-shadow: var(--glass-inset);
+      pointer-events: none;
+    }
+
+    th,
+    td {
+      padding: 1.2vh 1.2vw;
+      text-align: center;
+      font-size: clamp(12px, 1.6vw, 30px);
+      border-bottom: 1px solid rgba(255, 255, 255, .05)
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.02);
+      color: #F1F5F9;
+      font-weight: 600;
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: 0.02em
+    }
+
+    td {
+      background: transparent
+    }
+
+    .red {
+      color: var(--red);
+      font-weight: 600
+    }
+
+    .green {
+      color: var(--green);
+      font-weight: 600
+    }
+
+    .amber {
+      color: var(--amber);
+      font-weight: 600
+    }
+
+    .callout {
+      margin-top: 1.5vh;
+      background: linear-gradient(160deg, rgba(217, 70, 239, 0.06) 0%, rgba(217, 70, 239, 0.01) 100%);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      padding: 2.5vh 2vw;
+      border-radius: 16px;
+      border: var(--glass-border);
+      position: relative;
+      box-shadow: var(--glass-shadow);
+      transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out), border-color 0.5s var(--ease-out)
+    }
+
+    .callout::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      box-shadow: inset 0 1px 0 rgba(217, 70, 239, 0.3), inset 0 0 30px rgba(217, 70, 239, 0.05);
+      pointer-events: none
+    }
+
+    .callout:hover {
+      transform: translateY(-2px) scale(1.005);
+      box-shadow: var(--glass-shadow-hover);
+      border-color: rgba(217, 70, 239, 0.2)
+    }
+
+    .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: var(--glass-border);
+      padding: .6vh 1.4vw;
+      border-radius: 999px;
+      font-size: clamp(11px, 1.3vw, 24px);
+      font-weight: 600;
+      box-shadow: var(--glass-inset), 0 8px 24px rgba(0, 0, 0, 0.3);
+      letter-spacing: -0.01em
+    }
+
     /* SVG Animations */
-    .svg-anim { opacity: 0; transform: translateY(-15px) scale(0.97); transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out); }
-    .slide.active .svg-anim { opacity: 1; transform: translateY(0) scale(1); }
-    .svg-arrow { stroke-dasharray: 1000; stroke-dashoffset: 1000; transition: stroke-dashoffset 0.9s cubic-bezier(0.22, 1, 0.36, 1); opacity: 0; }
-    .slide.active .svg-arrow { stroke-dashoffset: 0; opacity: 1; }
+    .svg-anim {
+      opacity: 0;
+      transform: translateY(-15px) scale(0.97);
+      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+    }
+
+    .slide.active .svg-anim {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .svg-arrow {
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      transition: stroke-dashoffset 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity: 0;
+    }
+
+    .slide.active .svg-arrow {
+      stroke-dashoffset: 0;
+      opacity: 1;
+    }
 
     /* Fragment Animations */
-    .frag { opacity: 0; transform: translateX(-15px); transition: all 0.5s var(--ease-out); overflow: hidden; }
-    li.frag { max-height: 0; margin: 0; padding: 0 0; }
-    li.frag.visible { opacity: 1; transform: translateX(0); max-height: 80px; padding: 0.8vh 0; }
-    
-    .expl-box { background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border-radius: 12px; border: var(--glass-border); font-size: clamp(14px, 1.5vw, 24px); color: var(--text); max-height: 0; margin: 0 0 0 1vw; padding: 0 1.5vw; opacity: 0; transition: all 0.5s var(--ease-out); overflow: hidden; box-shadow: var(--glass-shadow); position:relative; }
-    .expl-box::before { content:''; position:absolute; inset:0; border-radius:12px; box-shadow:var(--glass-inset); pointer-events:none; }
-    .expl-box.visible { opacity: 1; transform: translateX(0); max-height: 500px; padding: 1.5vh 1.5vw; margin-bottom: 1.5vh; }
-    
-    .callout.frag { max-height: 0; padding: 0 2vw; margin-top: 0; border: none; opacity: 0; }
-    .callout.frag.visible { opacity: 1; transform: translateY(0); max-height: 250px; padding: 2vh 2vw; margin-top: 1.5vh; border: var(--glass-border); }
-    
-    /* Generic fade-in fragments (GSAP-style overlap scale-in) */
-    .frag-fade { opacity: 0; transform: translateY(20px) scale(0.97); transition: all 0.65s var(--ease-out); visibility: hidden; }
-    .frag-fade.visible { opacity: 1; transform: translateY(0) scale(1); visibility: visible; }
+    .frag {
+      opacity: 0;
+      transform: translateX(-15px);
+      transition: all 0.5s var(--ease-out);
+      overflow: hidden;
+    }
 
-    .nav{position:fixed;bottom:2vh;right:3vw;z-index:100;display:flex;align-items:center;gap:6px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);padding:6px 14px;border-radius:999px;border:var(--glass-border);user-select:none;opacity:0;transition:opacity 0.3s var(--ease-out);box-shadow:var(--glass-shadow);}
-    .nav::before{content:'';position:absolute;inset:0;border-radius:999px;box-shadow:var(--glass-inset);pointer-events:none;}
-    .nav:hover{opacity:1}
-    .nav button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:6px 10px;border-radius:8px;transition:all 0.2s;position:relative;z-index:1}
-    .nav button:hover{color:var(--text);background:rgba(255,255,255,.1);transform:scale(1.05)}
-    .nav .counter{color:var(--muted);font-size:11px;font-weight:700;min-width:40px;text-align:center;letter-spacing:0.1em;font-family:'Outfit',sans-serif;position:relative;z-index:1}
-    
-    .progress{position:fixed;left:0;top:0;width:3px;height:100vh;z-index:100;background:rgba(255,255,255,0.03);}
-    .progress-bar{width:100%;background:linear-gradient(180deg,var(--accent),var(--accent2));transition:height 0.6s var(--ease-out);box-shadow:0 0 20px rgba(56,189,248,0.6);}
+    li.frag {
+      max-height: 0;
+      margin: 0;
+      padding: 0 0;
+    }
+
+    li.frag.visible {
+      opacity: 1;
+      transform: translateX(0);
+      max-height: 80px;
+      padding: 0.8vh 0;
+    }
+
+    .expl-box {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-radius: 12px;
+      border: var(--glass-border);
+      font-size: clamp(14px, 1.5vw, 24px);
+      color: var(--text);
+      max-height: 0;
+      margin: 0 0 0 1vw;
+      padding: 0 1.5vw;
+      opacity: 0;
+      transition: all 0.5s var(--ease-out);
+      overflow: hidden;
+      box-shadow: var(--glass-shadow);
+      position: relative;
+    }
+
+    .expl-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      box-shadow: var(--glass-inset);
+      pointer-events: none;
+    }
+
+    .expl-box.visible {
+      opacity: 1;
+      transform: translateX(0);
+      max-height: 500px;
+      padding: 1.5vh 1.5vw;
+      margin-bottom: 1.5vh;
+    }
+
+    .callout.frag {
+      max-height: 0;
+      padding: 0 2vw;
+      margin-top: 0;
+      border: none;
+      opacity: 0;
+    }
+
+    .callout.frag.visible {
+      opacity: 1;
+      transform: translateY(0);
+      max-height: 250px;
+      padding: 2vh 2vw;
+      margin-top: 1.5vh;
+      border: var(--glass-border);
+    }
+
+    /* Generic fade-in fragments (GSAP-style overlap scale-in) */
+    .frag-fade {
+      opacity: 0;
+      transform: translateY(20px) scale(0.97);
+      transition: all 0.65s var(--ease-out);
+      visibility: hidden;
+    }
+
+    .frag-fade.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      visibility: visible;
+    }
+
+    .nav {
+      position: fixed;
+      bottom: 2vh;
+      right: 3vw;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: var(--glass-border);
+      user-select: none;
+      opacity: 0;
+      transition: opacity 0.3s var(--ease-out);
+      box-shadow: var(--glass-shadow);
+    }
+
+    .nav::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      box-shadow: var(--glass-inset);
+      pointer-events: none;
+    }
+
+    .nav:hover {
+      opacity: 1
+    }
+
+    .nav button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: all 0.2s;
+      position: relative;
+      z-index: 1
+    }
+
+    .nav button:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, .1);
+      transform: scale(1.05)
+    }
+
+    .nav .counter {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      min-width: 40px;
+      text-align: center;
+      letter-spacing: 0.1em;
+      font-family: 'Outfit', sans-serif;
+      position: relative;
+      z-index: 1
+    }
+
+    .progress {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 3px;
+      height: 100vh;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .progress-bar {
+      width: 100%;
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      transition: height 0.6s var(--ease-out);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
+    }
   </style>
 </head>
+
 <body>
-<div class="progress"><div class="progress-bar" id="progress"></div></div>
-<div class="deck" id="deck">
-
-<!-- 01 Title -->
-<div class="slide future center">
-  <div class="title-box anim">
-    <p class="sub" style="margin-bottom:2.5vh;letter-spacing:.18em;margin-top:0">CSE 4106 · Digital Image Processing</p>
-    <h1 style="max-width:90%">Investigation and Performance Evaluation of<br>Image Compression Algorithms</h1>
-    <p class="sub" style="margin-top:4vh;max-width:70%;margin-bottom:0">Tackling the constraints of storage and bandwidth in the real world.</p>
+  <div class="progress">
+    <div class="progress-bar" id="progress"></div>
   </div>
-</div>
+  <div class="deck" id="deck">
 
-<!-- 02 Fundamentals -->
-<div class="slide future">
-  <h2 class="anim">Compression Fundamentals</h2>
-  <div class="flex-row anim" style="margin-top: 5vh; gap: 4vw">
-    <div class="col">
-      <h3 class="frag-fade" data-show="1" style="color:var(--accent); margin-bottom: 2vh; font-size:clamp(16px,2vw,28px)">Lossless Compression</h3>
-      <div class="expl-box" data-show="2" style="font-size:clamp(14px,1.5vw,22px)">
-        <strong>Data is perfectly preserved.</strong><br><br>
-        The decompressed image is mathematically identical to the original. It removes statistical redundancy without permanently destroying any pixels. Ideal for scientific data or medical imaging.<br><br>
-        <span style="color:var(--accent)"><strong>Examples:</strong></span> PNG, RAW, TIFF (LZW), FLAC, ZIP.
+    <!-- 01 Title -->
+    <div class="slide future center">
+      <div class="title-box anim">
+        <p class="sub" style="margin-bottom:2.5vh;letter-spacing:.18em;margin-top:0">CSE 4106 · Digital Image Processing
+        </p>
+        <h1 style="max-width:90%">Investigation and Performance Evaluation of<br>Image Compression Algorithms</h1>
+        <p class="sub" style="margin-top:4vh;max-width:70%;margin-bottom:0">Tackling the constraints of storage and
+          bandwidth in the real world.</p>
       </div>
     </div>
-    <div class="col">
-      <h3 class="frag-fade" data-show="3" style="color:var(--accent2); margin-bottom: 2vh; font-size:clamp(16px,2vw,28px)">Lossy Compression</h3>
-      <div class="expl-box" data-show="4" style="font-size:clamp(14px,1.5vw,22px)">
-        <strong>Throwing away imperceptible data.</strong><br><br>
-        Permanently discards high-frequency information that the human eye struggles to perceive. This achieves drastically higher compression ratios at the cost of perfect fidelity.<br><br>
-        <span style="color:var(--accent2)"><strong>Examples:</strong></span> JPEG, WebP (lossy), MP4, MP3, K-Means Quantization.
+
+    <!-- 02 Fundamentals -->
+    <div class="slide future">
+      <h2 class="anim">Compression Fundamentals</h2>
+      <div class="flex-row anim" style="margin-top: 5vh; gap: 4vw">
+        <div class="col">
+          <h3 class="frag-fade" data-show="1"
+            style="color:var(--accent); margin-bottom: 2vh; font-size:clamp(16px,2vw,28px)">Lossless Compression</h3>
+          <div class="expl-box" data-show="2" style="font-size:clamp(14px,1.5vw,22px)">
+            <strong>Data is perfectly preserved.</strong><br><br>
+            The decompressed image is mathematically identical to the original. It removes statistical redundancy
+            without permanently destroying any pixels. Ideal for scientific data or medical imaging.<br><br>
+            <span style="color:var(--accent)"><strong>Examples:</strong></span> PNG, RAW, TIFF (LZW), FLAC, ZIP.
+          </div>
+        </div>
+        <div class="col">
+          <h3 class="frag-fade" data-show="3"
+            style="color:var(--accent2); margin-bottom: 2vh; font-size:clamp(16px,2vw,28px)">Lossy Compression</h3>
+          <div class="expl-box" data-show="4" style="font-size:clamp(14px,1.5vw,22px)">
+            <strong>Throwing away imperceptible data.</strong><br><br>
+            Permanently discards high-frequency information that the human eye struggles to perceive. This achieves
+            drastically higher compression ratios at the cost of perfect fidelity.<br><br>
+            <span style="color:var(--accent2)"><strong>Examples:</strong></span> JPEG, WebP (lossy), MP4, MP3, K-Means
+            Quantization.
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- 02 Journey -->
-<div class="slide future">
-  <h2 class="anim">Our Investigative Journey</h2>
-  <p class="anim">Why did we choose these three specific algorithms?</p>
-  <ul class="anim" style="margin-top:1.5vh;list-style:none">
-    
-    <li data-show="1" class="frag"><span class="stat-pill"><span class="highlight">01</span> <strong>Huffman Coding</strong> — A baseline of zero-data-loss</span></li>
-    <div data-show="2" data-hide="3" class="frag expl-box">
-      <strong>Zero-Data-Loss Baseline:</strong> Essential for understanding purely statistical redundancy reduction before moving to lossy methods. It guarantees perfect reconstruction.
+    <!-- 02 Journey -->
+    <div class="slide future">
+      <h2 class="anim">Our Investigative Journey</h2>
+      <p class="anim">Why did we choose these three specific algorithms?</p>
+      <ul class="anim" style="margin-top:1.5vh;list-style:none">
+
+        <li data-show="1" class="frag"><span class="stat-pill"><span class="highlight">01</span> <strong>Huffman
+              Coding</strong> — A baseline of zero-data-loss</span></li>
+        <div data-show="2" data-hide="3" class="frag expl-box">
+          <strong>Zero-Data-Loss Baseline:</strong> Essential for understanding purely statistical redundancy reduction
+          before moving to lossy methods. It guarantees perfect reconstruction.
+        </div>
+
+        <li data-show="3" class="frag"><span class="stat-pill"><span class="highlight">02</span> <strong>K-Means
+              Quantization</strong> — Mathematical reduction</span></li>
+        <div data-show="4" data-hide="5" class="frag expl-box">
+          <strong>Mathematical Color Reduction:</strong> Demonstrates how unsupervised machine learning can physically
+          cluster similar pixels, aggressively reducing the color palette size.
+        </div>
+
+        <li data-show="5" class="frag"><span class="stat-pill"><span class="highlight">03</span> <strong>JPEG
+              (DCT)</strong> — Human-perception model</span></li>
+        <div data-show="6" data-hide="7" class="frag expl-box">
+          <strong>Human-Perception Model:</strong> The industry standard. Exploits the flaws of the human eye by
+          dropping high-frequency spatial details using the Discrete Cosine Transform.
+        </div>
+      </ul>
+      <div data-show="7" class="callout frag">
+        <p style="margin:0"><strong>Implementation Challenges Overcome</strong></p>
+        <p class="sub" style="margin-top:.8vh;margin-bottom:0">– Fixed OpenCV 16-bit → 8-bit downscaling
+          (<code>cv2.IMREAD_UNCHANGED</code>)<br>– Solved K-Means freezing on Carina Nebula
+          (<code>MiniBatchKMeans</code> subsampling)</p>
+      </div>
     </div>
 
-    <li data-show="3" class="frag"><span class="stat-pill"><span class="highlight">02</span> <strong>K-Means Quantization</strong> — Mathematical reduction</span></li>
-    <div data-show="4" data-hide="5" class="frag expl-box">
-      <strong>Mathematical Color Reduction:</strong> Demonstrates how unsupervised machine learning can physically cluster similar pixels, aggressively reducing the color palette size.
-    </div>
-
-    <li data-show="5" class="frag"><span class="stat-pill"><span class="highlight">03</span> <strong>JPEG (DCT)</strong> — Human-perception model</span></li>
-    <div data-show="6" data-hide="7" class="frag expl-box">
-      <strong>Human-Perception Model:</strong> The industry standard. Exploits the flaws of the human eye by dropping high-frequency spatial details using the Discrete Cosine Transform.
-    </div>
-  </ul>
-  <div data-show="7" class="callout frag">
-    <p style="margin:0"><strong>Implementation Challenges Overcome</strong></p>
-    <p class="sub" style="margin-top:.8vh;margin-bottom:0">– Fixed OpenCV 16-bit → 8-bit downscaling (<code>cv2.IMREAD_UNCHANGED</code>)<br>– Solved K-Means freezing on Carina Nebula (<code>MiniBatchKMeans</code> subsampling)</p>
-  </div>
-</div>
-
-<!-- 03 Huffman Theory -->
-<div class="slide future">
-  <h2 class="anim">Lossless: Huffman Coding</h2>
-  <p class="frag-fade" data-show="1"><strong>Information Theory:</strong> Frequent pixels → short codes, rare pixels → long codes.</p>
-  <div class="frag-fade" data-show="2">
-    <p class="code-label">Priority Queue — Python</p>
-    <pre><code class="language-python">def build_huffman_tree(frequencies):
+    <!-- 03 Huffman Theory -->
+    <div class="slide future">
+      <h2 class="anim">Lossless: Huffman Coding</h2>
+      <p class="frag-fade" data-show="1"><strong>Information Theory:</strong> Frequent pixels → short codes, rare pixels
+        → long codes.</p>
+      <div class="frag-fade" data-show="2">
+        <p class="code-label">Priority Queue — Python</p>
+        <pre><code class="language-python">def build_huffman_tree(frequencies):
     heap = [HuffmanNode(sym, freq) for sym, freq in frequencies.items()]
     heapq.heapify(heap)
     while len(heap) > 1:
@@ -236,157 +800,244 @@
         merged.left, merged.right = left, right
         heapq.heappush(heap, merged)
     return heap[0]</code></pre>
-  </div>
-</div>
-
-<!-- 04 Huffman Pipeline Diagram ENCODER -->
-<div class="slide future">
-  <h2 class="anim" style="margin-bottom:0; font-size:clamp(18px,2.2vw,36px)">Huffman Pipeline: Encoder</h2>
-  <div class="svg-box anim"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 670" width="100%" height="100%" style="max-height: 80vh; background: transparent;">
-<defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#94A3B8" />
-    </marker>
-  </defs>
-<g class="svg-anim" style="transition-delay: 0.1s"><rect x="40" y="30" width="720" height="520" fill="none" stroke="#475569" stroke-width="1.5" stroke-dasharray="6,6" rx="8" ry="8" />
-<text x="55" y="52" font-family="'Inter', sans-serif" font-weight="bold" font-size="13" fill="#94A3B8" text-anchor="start" letter-spacing="0.1em">ENCODER SECTION</text></g>
-<g class="svg-anim" style="transition-delay: 0.2s"><path d="M 280.0 45.0 L 508.0 45.0 L 520.0 57.0 L 520.0 105.0 L 280.0 105.0 Z" fill="rgba(255, 255, 255, 0.05)" stroke="#E2E8F0" stroke-width="1.5" />
-<path d="M 508.0 45.0 L 508.0 57.0 L 520.0 57.0" fill="none" stroke="#E2E8F0" stroke-width="1.5" />
-<text x="400" y="75" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="71.5">Original Image (16-bit /</tspan>
-<tspan x="400" dy="15">8-bit)</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="105" x2="400" y2="130" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.30000000000000004s" />
-<g class="svg-anim" style="transition-delay: 0s"><rect x="280.0" y="130.0" width="240" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="400" y="160" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="156.5">Channel Separation (R, G,</tspan>
-<tspan x="400" dy="15">B)</tspan>
-</text></g>
-<path class="svg-arrow" d="M 400 190 V 210 H 170 V 225" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.5s" />
-<path class="svg-arrow" d="M 400 190 V 225" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.5s" />
-<path class="svg-arrow" d="M 400 190 V 210 H 630 V 225" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.5s" />
-<g class="svg-anim" style="transition-delay: 0s"><rect x="65.0" y="227.5" width="210" height="75" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="170" y="265" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="170" y="254.0">Red Channel: Calculate</tspan>
-<tspan x="170" dy="15">Pixel Frequencies</tspan>
-<tspan x="170" dy="15">(Histogram)</tspan>
-</text></g>
-<g class="svg-anim" style="transition-delay: 0s"><rect x="295.0" y="227.5" width="210" height="75" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="400" y="265" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="254.0">Green Channel:</tspan>
-<tspan x="400" dy="15">Calculate Pixel</tspan>
-<tspan x="400" dy="15">Frequencies (Histogram)</tspan>
-</text></g>
-<g class="svg-anim" style="transition-delay: 0s"><rect x="525.0" y="227.5" width="210" height="75" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="630" y="265" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="630" y="254.0">Blue Channel: Calculate</tspan>
-<tspan x="630" dy="15">Pixel Frequencies</tspan>
-<tspan x="630" dy="15">(Histogram)</tspan>
-</text></g>
-<path class="svg-arrow" d="M 170 305 V 330 H 400" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.7s" />
-<path class="svg-arrow" d="M 400 305 V 330" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.7s" />
-<path class="svg-arrow" d="M 630 305 V 330 H 400" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.7s" />
-<line class="svg-arrow" x1="400" y1="330" x2="400" y2="360" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.7999999999999999s" />
-<g class="svg-anim" style="transition-delay: 0s"><rect x="240.0" y="360.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="400" y="390" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="386.5">Build Huffman Tree & Generate</tspan>
-<tspan x="400" dy="15">Dictionary</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="420" x2="400" y2="450" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.9999999999999999s" />
-<g class="svg-anim" style="transition-delay: 0s"><rect x="240.0" y="450.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="400" y="480" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="476.5">Bitwise Encoding (Replace pixels</tspan>
-<tspan x="400" dy="15">with codes)</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="510" x2="400" y2="568" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 1.2s" />
-<g class="svg-anim" style="transition-delay: 1.3s"><path d="M 240.0 570.0 L 240.0 630.0 A 160.0 12 0 0 0 560.0 630.0 L 560.0 570.0 Z" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
-<ellipse cx="400" cy="570.0" rx="160.0" ry="12" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
-<text x="400" y="600" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="600.5">Compressed Bitstream & Huffman</tspan>
-<tspan x="400" dy="15">Dictionary</tspan>
-</text></g>
-</svg></div>
-</div>
-
-<!-- 05 Huffman Pipeline Diagram DECODER -->
-<div class="slide future">
-  <h2 class="anim" style="margin-bottom:0; font-size:clamp(18px,2.2vw,36px)">Huffman Pipeline: Decoder</h2>
-  <div class="svg-box anim"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 570 800 530" width="100%" height="100%" style="max-height: 80vh; background: transparent;">
-<defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#94A3B8" />
-    </marker>
-  </defs>
-<g class="svg-anim" style="transition-delay: 0.1s"><path d="M 240.0 570.0 L 240.0 630.0 A 160.0 12 0 0 0 560.0 630.0 L 560.0 570.0 Z" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
-<ellipse cx="400" cy="570.0" rx="160.0" ry="12" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
-<text x="400" y="600" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="600.5">Compressed Bitstream & Huffman</tspan>
-<tspan x="400" dy="15">Dictionary</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="642" x2="400" y2="690" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.2s" />
-<g class="svg-anim" style="transition-delay: 0.30000000000000004s"><rect x="40" y="660" width="720" height="410" fill="none" stroke="#475569" stroke-width="1.5" stroke-dasharray="6,6" rx="8" ry="8" />
-<text x="55" y="682" font-family="'Inter', sans-serif" font-weight="bold" font-size="13" fill="#94A3B8" text-anchor="start" letter-spacing="0.1em">DECODER SECTION</text></g>
-<g class="svg-anim" style="transition-delay: 0s"><rect x="240.0" y="690.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="400" y="720" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="716.5">Reverse Dictionary Lookup</tspan>
-<tspan x="400" dy="15">(Bit-to-Pixel)</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="750" x2="400" y2="780" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.5s" />
-<g class="svg-anim" style="transition-delay: 0s"><rect x="240.0" y="780.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="400" y="810" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="814.0">Reshape 1D Arrays to 2D Matrices</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="840" x2="400" y2="870" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.7s" />
-<g class="svg-anim" style="transition-delay: 0s"><rect x="260.0" y="870.0" width="280" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="400" y="900" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="904.0">Stack Channels (R, G, B)</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="930" x2="400" y2="960" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.8999999999999999s" />
-<g class="svg-anim" style="transition-delay: 0.9999999999999999s"><path d="M 280.0 965.0 L 508.0 965.0 L 520.0 977.0 L 520.0 1025.0 L 280.0 1025.0 Z" fill="rgba(255, 255, 255, 0.05)" stroke="#E2E8F0" stroke-width="1.5" />
-<path d="M 508.0 965.0 L 508.0 977.0 L 520.0 977.0" fill="none" stroke="#E2E8F0" stroke-width="1.5" />
-<text x="400" y="995" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="991.5">Perfectly Reconstructed</tspan>
-<tspan x="400" dy="15">Image</tspan>
-</text></g>
-<text x="400" y="1055" font-family="'Inter', sans-serif" font-weight="500" font-size="14" fill="#E2E8F0" text-anchor="middle" class="svg-anim" style="transition-delay: 1.0999999999999999s">Figure 1: Huffman Coding Pipeline (Lossless)</text>
-</svg></div>
-</div>
-
-<!-- 06 Huffman Results -->
-<div class="slide future">
-  <h2 class="anim">Huffman: Image Redundancy Comparison</h2>
-  <div class="flex-row anim">
-    <div class="col center frag-fade" data-show="1">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>Eclipse 2 (Highest Redundancy)</strong></p>
-      <div class="img-box" style="width:100%"><img src="solar_eclipse2_huffman.png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill"><span class="highlight">CR: 2.56 : 1</span></span></p>
+      </div>
     </div>
-    <div class="col center frag-fade" data-show="2">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>Eclipse 1 (Intermediate)</strong></p>
-      <div class="img-box" style="width:100%"><img src="solar_eclipse_huffman.png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill"><span class="highlight">CR: 1.23 : 1</span></span></p>
-    </div>
-    <div class="col center frag-fade" data-show="3">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>Carina Nebula (Complex)</strong></p>
-      <div class="img-box" style="width:100%"><img src="Carina_Nebula_huffman.png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill"><span class="highlight">CR: 1.09 : 1</span></span></p>
-    </div>
-  </div>
-  <div class="callout frag-fade" data-show="4" style="margin-top: 2vh;">
-    <p style="margin:0"><strong>Key Takeaway:</strong></p>
-    <p class="sub" style="margin-top:.8vh;margin-bottom:0">
-      <strong>Eclipse 2</strong> achieves a massive CR due to redundant black space (low entropy). In contrast, the <strong>Carina Nebula's</strong> unique star pixels generate inefficient trees, resulting in a much poorer CR.
-    </p>
-  </div>
-</div>
 
-<!-- 07 K-Means Theory -->
-<div class="slide future">
-  <h2 class="anim">Intermediate Lossy: K-Means Quantization</h2>
-  <p class="frag-fade" data-show="1"><strong>Palette Reduction:</strong> Restrict millions of 16-bit colors to exactly K colors.</p>
-  <div class="frag-fade" data-show="2">
-    <p class="code-label">MiniBatch Subsampling — Python</p>
-    <pre><code class="language-python"># Bypassing the high-res processing bottleneck
+    <!-- 04 Huffman Pipeline Diagram ENCODER -->
+    <div class="slide future">
+      <h2 class="anim" style="margin-bottom:0; font-size:clamp(18px,2.2vw,36px)">Huffman Pipeline: Encoder</h2>
+      <div class="svg-box anim"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 670" width="100%" height="100%"
+          style="max-height: 80vh; background: transparent;">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+              orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#94A3B8" />
+            </marker>
+          </defs>
+          <g class="svg-anim" style="transition-delay: 0.1s">
+            <rect x="40" y="30" width="720" height="520" fill="none" stroke="#475569" stroke-width="1.5"
+              stroke-dasharray="6,6" rx="8" ry="8" />
+            <text x="55" y="52" font-family="'Inter', sans-serif" font-weight="bold" font-size="13" fill="#94A3B8"
+              text-anchor="start" letter-spacing="0.1em">ENCODER SECTION</text>
+          </g>
+          <g class="svg-anim" style="transition-delay: 0.2s">
+            <path d="M 280.0 45.0 L 508.0 45.0 L 520.0 57.0 L 520.0 105.0 L 280.0 105.0 Z"
+              fill="rgba(255, 255, 255, 0.05)" stroke="#E2E8F0" stroke-width="1.5" />
+            <path d="M 508.0 45.0 L 508.0 57.0 L 520.0 57.0" fill="none" stroke="#E2E8F0" stroke-width="1.5" />
+            <text x="400" y="75" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="71.5">Original Image (16-bit /</tspan>
+              <tspan x="400" dy="15">8-bit)</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="105" x2="400" y2="130" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.30000000000000004s" />
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="280.0" y="130.0" width="240" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="400" y="160" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="156.5">Channel Separation (R, G,</tspan>
+              <tspan x="400" dy="15">B)</tspan>
+            </text>
+          </g>
+          <path class="svg-arrow" d="M 400 190 V 210 H 170 V 225" fill="none" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.5s" />
+          <path class="svg-arrow" d="M 400 190 V 225" fill="none" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.5s" />
+          <path class="svg-arrow" d="M 400 190 V 210 H 630 V 225" fill="none" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.5s" />
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="65.0" y="227.5" width="210" height="75" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="170" y="265" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="170" y="254.0">Red Channel: Calculate</tspan>
+              <tspan x="170" dy="15">Pixel Frequencies</tspan>
+              <tspan x="170" dy="15">(Histogram)</tspan>
+            </text>
+          </g>
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="295.0" y="227.5" width="210" height="75" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="400" y="265" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="254.0">Green Channel:</tspan>
+              <tspan x="400" dy="15">Calculate Pixel</tspan>
+              <tspan x="400" dy="15">Frequencies (Histogram)</tspan>
+            </text>
+          </g>
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="525.0" y="227.5" width="210" height="75" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="630" y="265" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="630" y="254.0">Blue Channel: Calculate</tspan>
+              <tspan x="630" dy="15">Pixel Frequencies</tspan>
+              <tspan x="630" dy="15">(Histogram)</tspan>
+            </text>
+          </g>
+          <path class="svg-arrow" d="M 170 305 V 330 H 400" fill="none" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.7s" />
+          <path class="svg-arrow" d="M 400 305 V 330" fill="none" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.7s" />
+          <path class="svg-arrow" d="M 630 305 V 330 H 400" fill="none" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.7s" />
+          <line class="svg-arrow" x1="400" y1="330" x2="400" y2="360" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.7999999999999999s" />
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="240.0" y="360.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="400" y="390" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="386.5">Build Huffman Tree & Generate</tspan>
+              <tspan x="400" dy="15">Dictionary</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="420" x2="400" y2="450" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.9999999999999999s" />
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="240.0" y="450.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="400" y="480" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="476.5">Bitwise Encoding (Replace pixels</tspan>
+              <tspan x="400" dy="15">with codes)</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="510" x2="400" y2="568" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 1.2s" />
+          <g class="svg-anim" style="transition-delay: 1.3s">
+            <path d="M 240.0 570.0 L 240.0 630.0 A 160.0 12 0 0 0 560.0 630.0 L 560.0 570.0 Z"
+              fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
+            <ellipse cx="400" cy="570.0" rx="160.0" ry="12" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80"
+              stroke-width="1.5" />
+            <text x="400" y="600" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="600.5">Compressed Bitstream & Huffman</tspan>
+              <tspan x="400" dy="15">Dictionary</tspan>
+            </text>
+          </g>
+        </svg></div>
+    </div>
+
+    <!-- 05 Huffman Pipeline Diagram DECODER -->
+    <div class="slide future">
+      <h2 class="anim" style="margin-bottom:0; font-size:clamp(18px,2.2vw,36px)">Huffman Pipeline: Decoder</h2>
+      <div class="svg-box anim"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 570 800 530" width="100%"
+          height="100%" style="max-height: 80vh; background: transparent;">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+              orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#94A3B8" />
+            </marker>
+          </defs>
+          <g class="svg-anim" style="transition-delay: 0.1s">
+            <path d="M 240.0 570.0 L 240.0 630.0 A 160.0 12 0 0 0 560.0 630.0 L 560.0 570.0 Z"
+              fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
+            <ellipse cx="400" cy="570.0" rx="160.0" ry="12" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80"
+              stroke-width="1.5" />
+            <text x="400" y="600" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="600.5">Compressed Bitstream & Huffman</tspan>
+              <tspan x="400" dy="15">Dictionary</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="642" x2="400" y2="690" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.2s" />
+          <g class="svg-anim" style="transition-delay: 0.30000000000000004s">
+            <rect x="40" y="660" width="720" height="410" fill="none" stroke="#475569" stroke-width="1.5"
+              stroke-dasharray="6,6" rx="8" ry="8" />
+            <text x="55" y="682" font-family="'Inter', sans-serif" font-weight="bold" font-size="13" fill="#94A3B8"
+              text-anchor="start" letter-spacing="0.1em">DECODER SECTION</text>
+          </g>
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="240.0" y="690.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="400" y="720" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="716.5">Reverse Dictionary Lookup</tspan>
+              <tspan x="400" dy="15">(Bit-to-Pixel)</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="750" x2="400" y2="780" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.5s" />
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="240.0" y="780.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="400" y="810" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="814.0">Reshape 1D Arrays to 2D Matrices</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="840" x2="400" y2="870" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.7s" />
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="260.0" y="870.0" width="280" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="400" y="900" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="904.0">Stack Channels (R, G, B)</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="930" x2="400" y2="960" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.8999999999999999s" />
+          <g class="svg-anim" style="transition-delay: 0.9999999999999999s">
+            <path d="M 280.0 965.0 L 508.0 965.0 L 520.0 977.0 L 520.0 1025.0 L 280.0 1025.0 Z"
+              fill="rgba(255, 255, 255, 0.05)" stroke="#E2E8F0" stroke-width="1.5" />
+            <path d="M 508.0 965.0 L 508.0 977.0 L 520.0 977.0" fill="none" stroke="#E2E8F0" stroke-width="1.5" />
+            <text x="400" y="995" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="991.5">Perfectly Reconstructed</tspan>
+              <tspan x="400" dy="15">Image</tspan>
+            </text>
+          </g>
+          <text x="400" y="1055" font-family="'Inter', sans-serif" font-weight="500" font-size="14" fill="#E2E8F0"
+            text-anchor="middle" class="svg-anim" style="transition-delay: 1.0999999999999999s">Figure 1: Huffman Coding
+            Pipeline (Lossless)</text>
+        </svg></div>
+    </div>
+
+    <!-- 06 Huffman Results -->
+    <div class="slide future">
+      <h2 class="anim">Huffman: Image Redundancy Comparison</h2>
+      <div class="flex-row anim">
+        <div class="col center frag-fade" data-show="1">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>Eclipse 2 (Highest Redundancy)</strong></p>
+          <div class="img-box" style="width:100%"><img src="solar_eclipse2_huffman.png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill"><span class="highlight">CR: 2.56 :
+                1</span></span></p>
+        </div>
+        <div class="col center frag-fade" data-show="2">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>Eclipse 1 (Intermediate)</strong></p>
+          <div class="img-box" style="width:100%"><img src="solar_eclipse_huffman.png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill"><span class="highlight">CR: 1.23 :
+                1</span></span></p>
+        </div>
+        <div class="col center frag-fade" data-show="3">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>Carina Nebula (Complex)</strong></p>
+          <div class="img-box" style="width:100%"><img src="Carina_Nebula_huffman.png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill"><span class="highlight">CR: 1.09 :
+                1</span></span></p>
+        </div>
+      </div>
+      <div class="callout frag-fade" data-show="4" style="margin-top: 2vh;">
+        <p style="margin:0"><strong>Key Takeaway:</strong></p>
+        <p class="sub" style="margin-top:.8vh;margin-bottom:0">
+          <strong>Eclipse 2</strong> achieves a massive CR due to redundant black space (low entropy). In contrast, the
+          <strong>Carina Nebula's</strong> unique star pixels generate inefficient trees, resulting in a much poorer CR.
+        </p>
+      </div>
+    </div>
+
+    <!-- 07 K-Means Theory -->
+    <div class="slide future">
+      <h2 class="anim">Intermediate Lossy: K-Means Quantization</h2>
+      <p class="frag-fade" data-show="1"><strong>Palette Reduction:</strong> Restrict millions of 16-bit colors to
+        exactly K colors.</p>
+      <div class="frag-fade" data-show="2">
+        <p class="code-label">MiniBatch Subsampling — Python</p>
+        <pre><code class="language-python"># Bypassing the high-res processing bottleneck
 image_array = np.array(image_rgb, dtype=np.float64) / 255.0
 pixels = image_array.reshape(-1, 3)
 
@@ -398,162 +1049,235 @@ kmeans.fit(sampled_pixels)
 # Apply trained centers to full image
 labels = kmeans.predict(pixels)
 quantized_image = kmeans.cluster_centers_[labels].reshape(image_array.shape)</code></pre>
-  </div>
-</div>
-
-<!-- 08 K-Means Pipeline ENCODER -->
-<div class="slide future">
-  <h2 class="anim" style="margin-bottom:0; font-size:clamp(18px,2.2vw,36px)">K-Means Pipeline: Encoder</h2>
-  <div class="svg-box anim"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%" style="max-height: 80vh; background: transparent;">
-<defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#94A3B8" />
-    </marker>
-  </defs>
-<g class="svg-anim" style="transition-delay: 0.1s"><rect x="40" y="30" width="720" height="470" fill="none" stroke="#475569" stroke-width="1.5" stroke-dasharray="6,6" rx="8" ry="8" />
-<text x="55" y="52" font-family="'Inter', sans-serif" font-weight="bold" font-size="13" fill="#94A3B8" text-anchor="start" letter-spacing="0.1em">ENCODER SECTION</text></g>
-<g class="svg-anim" style="transition-delay: 0.2s"><path d="M 290.0 45.0 L 498.0 45.0 L 510.0 57.0 L 510.0 105.0 L 290.0 105.0 Z" fill="rgba(255, 255, 255, 0.05)" stroke="#E2E8F0" stroke-width="1.5" />
-<path d="M 498.0 45.0 L 498.0 57.0 L 510.0 57.0" fill="none" stroke="#E2E8F0" stroke-width="1.5" />
-<text x="400" y="75" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="79.0">Original RGB Image</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="105" x2="400" y2="130" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.30000000000000004s" />
-<g class="svg-anim" style="transition-delay: 0s"><rect x="260.0" y="130.0" width="280" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="400" y="160" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="164.0">Reshape to 2D Pixel Array</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="190" x2="400" y2="220" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.5s" />
-<g class="svg-anim" style="transition-delay: 0s"><rect x="240.0" y="220.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="400" y="250" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="246.5">Random Subsampling (Speed</tspan>
-<tspan x="400" dy="15">Optimization)</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="280" x2="400" y2="310" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.7s" />
-<g class="svg-anim" style="transition-delay: 0s"><rect x="240.0" y="310.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="400" y="340" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="336.5">Mini-Batch K-Means Clustering</tspan>
-<tspan x="400" dy="15">(Train)</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="370" x2="400" y2="400" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.8999999999999999s" />
-<g class="svg-anim" style="transition-delay: 0s"><rect x="190.0" y="400.0" width="420" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="400" y="430" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="426.5">Extract Centroids (Color Palette) AND Map</tspan>
-<tspan x="400" dy="15">Original Pixels to Labels (Indices)</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="460" x2="400" y2="518" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 1.0999999999999999s" />
-<g class="svg-anim" style="transition-delay: 1.2s"><path d="M 230.0 520.0 L 230.0 580.0 A 170.0 12 0 0 0 570.0 580.0 L 570.0 520.0 Z" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
-<ellipse cx="400" cy="520.0" rx="170.0" ry="12" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
-<text x="400" y="550" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="550.5">Compressed Data: K-Color Palette +</tspan>
-<tspan x="400" dy="15">Pixel Indices</tspan>
-</text></g>
-</svg></div>
-</div>
-
-<!-- 09 K-Means Pipeline DECODER -->
-<div class="slide future">
-  <h2 class="anim" style="margin-bottom:0; font-size:clamp(18px,2.2vw,36px)">K-Means Pipeline: Decoder</h2>
-  <div class="svg-box anim"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 520 800 480" width="100%" height="100%" style="max-height: 80vh; background: transparent;">
-<defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#94A3B8" />
-    </marker>
-  </defs>
-<g class="svg-anim" style="transition-delay: 0.1s"><path d="M 230.0 520.0 L 230.0 580.0 A 170.0 12 0 0 0 570.0 580.0 L 570.0 520.0 Z" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
-<ellipse cx="400" cy="520.0" rx="170.0" ry="12" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
-<text x="400" y="550" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="550.5">Compressed Data: K-Color Palette +</tspan>
-<tspan x="400" dy="15">Pixel Indices</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="592" x2="400" y2="640" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.2s" />
-<g class="svg-anim" style="transition-delay: 0.30000000000000004s"><rect x="40" y="610" width="720" height="320" fill="none" stroke="#475569" stroke-width="1.5" stroke-dasharray="6,6" rx="8" ry="8" />
-<text x="55" y="632" font-family="'Inter', sans-serif" font-weight="bold" font-size="13" fill="#94A3B8" text-anchor="start" letter-spacing="0.1em">DECODER SECTION</text></g>
-<g class="svg-anim" style="transition-delay: 0s"><rect x="240.0" y="640.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="400" y="670" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="674.0">Replace Indices with Palette Colors</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="700" x2="400" y2="730" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.5s" />
-<g class="svg-anim" style="transition-delay: 0s"><rect x="260.0" y="730.0" width="280" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="400" y="760" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="764.0">Reshape to 3D Image Matrix</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="790" x2="400" y2="820" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.7s" />
-<g class="svg-anim" style="transition-delay: 0.7999999999999999s"><path d="M 290.0 825.0 L 498.0 825.0 L 510.0 837.0 L 510.0 885.0 L 290.0 885.0 Z" fill="rgba(255, 255, 255, 0.05)" stroke="#E2E8F0" stroke-width="1.5" />
-<path d="M 498.0 825.0 L 498.0 837.0 L 510.0 837.0" fill="none" stroke="#E2E8F0" stroke-width="1.5" />
-<text x="400" y="855" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="859.0">Quantized Image (Lossy)</tspan>
-</text></g>
-<text x="400" y="950" font-family="'Inter', sans-serif" font-weight="500" font-size="14" fill="#E2E8F0" text-anchor="middle" class="svg-anim" style="transition-delay: 0.8999999999999999s">Figure 2: K-Means Color Quantization (Lossy)</text>
-</svg></div>
-</div>
-
-<!-- 10 K-Means Results: Eclipse 2 -->
-<div class="slide future">
-  <h2 class="anim">K-Means: Eclipse 2</h2>
-  <div class="flex-row anim">
-    <div class="col center frag-fade" data-show="1">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=4 Colors</strong></p>
-      <div class="img-box" style="width:100%"><img src="solar_eclipse2_color_quantization_(K4_colors).png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">24.0 : 1</span> · SSIM: 0.825</span></p>
+      </div>
     </div>
-    <div class="col center frag-fade" data-show="2">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=8 Colors</strong></p>
-      <div class="img-box" style="width:100%"><img src="solar_eclipse2_color_quantization_(K8_colors).png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">16.0 : 1</span> · SSIM: 0.959</span></p>
-    </div>
-  </div>
-  <div class="callout frag-fade" data-show="3" style="margin-top: 2vh;">
-    <p style="margin:0"><strong>Observation:</strong> Notice the severe visual "banding" and posterization artifacts in the dark space when K is aggressively reduced.</p>
-  </div>
-</div>
 
-<!-- 11 K-Means Results: Eclipse 1 -->
-<div class="slide future">
-  <h2 class="anim">K-Means: Eclipse 1</h2>
-  <div class="flex-row anim">
-    <div class="col center frag-fade" data-show="1">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=16 Colors</strong></p>
-      <div class="img-box" style="width:100%"><img src="solar_eclipse_color_quantization_(K16_colors).png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">12.0 : 1</span> · SSIM: 0.910</span></p>
+    <!-- 08 K-Means Pipeline ENCODER -->
+    <div class="slide future">
+      <h2 class="anim" style="margin-bottom:0; font-size:clamp(18px,2.2vw,36px)">K-Means Pipeline: Encoder</h2>
+      <div class="svg-box anim"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%"
+          style="max-height: 80vh; background: transparent;">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+              orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#94A3B8" />
+            </marker>
+          </defs>
+          <g class="svg-anim" style="transition-delay: 0.1s">
+            <rect x="40" y="30" width="720" height="470" fill="none" stroke="#475569" stroke-width="1.5"
+              stroke-dasharray="6,6" rx="8" ry="8" />
+            <text x="55" y="52" font-family="'Inter', sans-serif" font-weight="bold" font-size="13" fill="#94A3B8"
+              text-anchor="start" letter-spacing="0.1em">ENCODER SECTION</text>
+          </g>
+          <g class="svg-anim" style="transition-delay: 0.2s">
+            <path d="M 290.0 45.0 L 498.0 45.0 L 510.0 57.0 L 510.0 105.0 L 290.0 105.0 Z"
+              fill="rgba(255, 255, 255, 0.05)" stroke="#E2E8F0" stroke-width="1.5" />
+            <path d="M 498.0 45.0 L 498.0 57.0 L 510.0 57.0" fill="none" stroke="#E2E8F0" stroke-width="1.5" />
+            <text x="400" y="75" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="79.0">Original RGB Image</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="105" x2="400" y2="130" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.30000000000000004s" />
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="260.0" y="130.0" width="280" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="400" y="160" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="164.0">Reshape to 2D Pixel Array</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="190" x2="400" y2="220" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.5s" />
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="240.0" y="220.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="400" y="250" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="246.5">Random Subsampling (Speed</tspan>
+              <tspan x="400" dy="15">Optimization)</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="280" x2="400" y2="310" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.7s" />
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="240.0" y="310.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="400" y="340" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="336.5">Mini-Batch K-Means Clustering</tspan>
+              <tspan x="400" dy="15">(Train)</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="370" x2="400" y2="400" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.8999999999999999s" />
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="190.0" y="400.0" width="420" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="400" y="430" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="426.5">Extract Centroids (Color Palette) AND Map</tspan>
+              <tspan x="400" dy="15">Original Pixels to Labels (Indices)</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="460" x2="400" y2="518" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 1.0999999999999999s" />
+          <g class="svg-anim" style="transition-delay: 1.2s">
+            <path d="M 230.0 520.0 L 230.0 580.0 A 170.0 12 0 0 0 570.0 580.0 L 570.0 520.0 Z"
+              fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
+            <ellipse cx="400" cy="520.0" rx="170.0" ry="12" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80"
+              stroke-width="1.5" />
+            <text x="400" y="550" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="550.5">Compressed Data: K-Color Palette +</tspan>
+              <tspan x="400" dy="15">Pixel Indices</tspan>
+            </text>
+          </g>
+        </svg></div>
     </div>
-    <div class="col center frag-fade" data-show="2">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=32 Colors</strong></p>
-      <div class="img-box" style="width:100%"><img src="solar_eclipse_color_quantization_(K32_colors).png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">9.6 : 1</span> · SSIM: 0.960</span></p>
-    </div>
-  </div>
-  <div class="callout frag-fade" data-show="3" style="margin-top: 2vh;">
-    <p style="margin:0"><strong>Observation:</strong> A moderate image reacts reasonably well at higher K, but notice the inverse relationship: as K drops, CR skyrockets, but SSIM strictly crashes.</p>
-  </div>
-</div>
 
-<!-- 12 K-Means Results: Carina Nebula -->
-<div class="slide future">
-  <h2 class="anim">K-Means: Carina Nebula</h2>
-  <div class="flex-row anim">
-    <div class="col center frag-fade" data-show="1">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=16 Colors</strong></p>
-      <div class="img-box" style="width:100%"><img src="Carina_Nebula_color_quantization_(K16_colors).png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">6.0 : 1</span> · SSIM: 0.866</span></p>
+    <!-- 09 K-Means Pipeline DECODER -->
+    <div class="slide future">
+      <h2 class="anim" style="margin-bottom:0; font-size:clamp(18px,2.2vw,36px)">K-Means Pipeline: Decoder</h2>
+      <div class="svg-box anim"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 520 800 480" width="100%"
+          height="100%" style="max-height: 80vh; background: transparent;">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+              orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#94A3B8" />
+            </marker>
+          </defs>
+          <g class="svg-anim" style="transition-delay: 0.1s">
+            <path d="M 230.0 520.0 L 230.0 580.0 A 170.0 12 0 0 0 570.0 580.0 L 570.0 520.0 Z"
+              fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
+            <ellipse cx="400" cy="520.0" rx="170.0" ry="12" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80"
+              stroke-width="1.5" />
+            <text x="400" y="550" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="550.5">Compressed Data: K-Color Palette +</tspan>
+              <tspan x="400" dy="15">Pixel Indices</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="592" x2="400" y2="640" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.2s" />
+          <g class="svg-anim" style="transition-delay: 0.30000000000000004s">
+            <rect x="40" y="610" width="720" height="320" fill="none" stroke="#475569" stroke-width="1.5"
+              stroke-dasharray="6,6" rx="8" ry="8" />
+            <text x="55" y="632" font-family="'Inter', sans-serif" font-weight="bold" font-size="13" fill="#94A3B8"
+              text-anchor="start" letter-spacing="0.1em">DECODER SECTION</text>
+          </g>
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="240.0" y="640.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="400" y="670" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="674.0">Replace Indices with Palette Colors</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="700" x2="400" y2="730" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.5s" />
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="260.0" y="730.0" width="280" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="400" y="760" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="764.0">Reshape to 3D Image Matrix</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="790" x2="400" y2="820" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.7s" />
+          <g class="svg-anim" style="transition-delay: 0.7999999999999999s">
+            <path d="M 290.0 825.0 L 498.0 825.0 L 510.0 837.0 L 510.0 885.0 L 290.0 885.0 Z"
+              fill="rgba(255, 255, 255, 0.05)" stroke="#E2E8F0" stroke-width="1.5" />
+            <path d="M 498.0 825.0 L 498.0 837.0 L 510.0 837.0" fill="none" stroke="#E2E8F0" stroke-width="1.5" />
+            <text x="400" y="855" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="859.0">Quantized Image (Lossy)</tspan>
+            </text>
+          </g>
+          <text x="400" y="950" font-family="'Inter', sans-serif" font-weight="500" font-size="14" fill="#E2E8F0"
+            text-anchor="middle" class="svg-anim" style="transition-delay: 0.8999999999999999s">Figure 2: K-Means Color
+            Quantization (Lossy)</text>
+        </svg></div>
     </div>
-    <div class="col center frag-fade" data-show="2">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=32 Colors</strong></p>
-      <div class="img-box" style="width:100%"><img src="Carina_Nebula_color_quantization_(K32_colors).png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">4.8 : 1</span> · SSIM: 0.877</span></p>
-    </div>
-  </div>
-  <div class="callout frag-fade" data-show="3" style="margin-top: 2vh;">
-    <p style="margin:0"><strong>Observation:</strong> On a high-detail image, K-Means violently clusters out the fine stars and structural details, destroying visual fidelity.</p>
-  </div>
-</div>
 
-<!-- 13 JPEG Theory -->
-<div class="slide future">
-  <h2 class="anim">Advanced Lossy: JPEG Pipeline</h2>
-  <p class="frag-fade" data-show="1"><strong>DCT:</strong> Drops high frequencies the human eye cannot perceive.</p>
-  <div class="frag-fade" data-show="2">
-    <p class="code-label">Quantization Data Loss — Python</p>
-    <pre><code class="language-python"># DCT separates the block into frequency components
+    <!-- 10 K-Means Results: Eclipse 2 -->
+    <div class="slide future">
+      <h2 class="anim">K-Means: Eclipse 2</h2>
+      <div class="flex-row anim">
+        <div class="col center frag-fade" data-show="1">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=4 Colors</strong></p>
+          <div class="img-box" style="width:100%"><img src="solar_eclipse2_color_quantization_(K4_colors).png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">24.0 : 1</span> ·
+              SSIM: 0.825</span></p>
+        </div>
+        <div class="col center frag-fade" data-show="2">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=8 Colors</strong></p>
+          <div class="img-box" style="width:100%"><img src="solar_eclipse2_color_quantization_(K8_colors).png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">16.0 : 1</span> ·
+              SSIM: 0.959</span></p>
+        </div>
+      </div>
+      <div class="callout frag-fade" data-show="3" style="margin-top: 2vh;">
+        <p style="margin:0"><strong>Observation:</strong> Notice the severe visual "banding" and posterization artifacts
+          in the dark space when K is aggressively reduced.</p>
+      </div>
+    </div>
+
+    <!-- 11 K-Means Results: Eclipse 1 -->
+    <div class="slide future">
+      <h2 class="anim">K-Means: Eclipse 1</h2>
+      <div class="flex-row anim">
+        <div class="col center frag-fade" data-show="1">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=16 Colors</strong></p>
+          <div class="img-box" style="width:100%"><img src="solar_eclipse_color_quantization_(K16_colors).png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">12.0 : 1</span> ·
+              SSIM: 0.910</span></p>
+        </div>
+        <div class="col center frag-fade" data-show="2">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=32 Colors</strong></p>
+          <div class="img-box" style="width:100%"><img src="solar_eclipse_color_quantization_(K32_colors).png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">9.6 : 1</span> ·
+              SSIM: 0.960</span></p>
+        </div>
+      </div>
+      <div class="callout frag-fade" data-show="3" style="margin-top: 2vh;">
+        <p style="margin:0"><strong>Observation:</strong> A moderate image reacts reasonably well at higher K, but
+          notice the inverse relationship: as K drops, CR skyrockets, but SSIM strictly crashes.</p>
+      </div>
+    </div>
+
+    <!-- 12 K-Means Results: Carina Nebula -->
+    <div class="slide future">
+      <h2 class="anim">K-Means: Carina Nebula</h2>
+      <div class="flex-row anim">
+        <div class="col center frag-fade" data-show="1">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=16 Colors</strong></p>
+          <div class="img-box" style="width:100%"><img src="Carina_Nebula_color_quantization_(K16_colors).png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">6.0 : 1</span> ·
+              SSIM: 0.866</span></p>
+        </div>
+        <div class="col center frag-fade" data-show="2">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=32 Colors</strong></p>
+          <div class="img-box" style="width:100%"><img src="Carina_Nebula_color_quantization_(K32_colors).png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">4.8 : 1</span> ·
+              SSIM: 0.877</span></p>
+        </div>
+      </div>
+      <div class="callout frag-fade" data-show="3" style="margin-top: 2vh;">
+        <p style="margin:0"><strong>Observation:</strong> On a high-detail image, K-Means violently clusters out the
+          fine stars and structural details, destroying visual fidelity.</p>
+      </div>
+    </div>
+
+    <!-- 13 JPEG Theory -->
+    <div class="slide future">
+      <h2 class="anim">Advanced Lossy: JPEG Pipeline</h2>
+      <p class="frag-fade" data-show="1"><strong>DCT:</strong> Drops high frequencies the human eye cannot perceive.</p>
+      <div class="frag-fade" data-show="2">
+        <p class="code-label">Quantization Data Loss — Python</p>
+        <pre><code class="language-python"># DCT separates the block into frequency components
 dct_block = cv2.dct(block_f32)
 
 # Quantization: actual data loss occurs here
@@ -562,347 +1286,449 @@ quantized = np.round(dct_block / q_matrix)
 # Dequantization: cannot recover lost decimals
 dequantized = quantized * q_matrix
 idct_block  = cv2.idct(dequantized)</code></pre>
+      </div>
+    </div>
+
+    <!-- 14 JPEG Pipeline ENCODER -->
+    <div class="slide future">
+      <h2 class="anim" style="margin-bottom:0; font-size:clamp(18px,2.2vw,36px)">JPEG Pipeline: Encoder</h2>
+      <div class="svg-box anim"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 680" width="100%" height="100%"
+          style="max-height: 80vh; background: transparent;">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+              orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#94A3B8" />
+            </marker>
+          </defs>
+          <g class="svg-anim" style="transition-delay: 0.1s">
+            <rect x="40" y="30" width="720" height="540" fill="none" stroke="#475569" stroke-width="1.5"
+              stroke-dasharray="6,6" rx="8" ry="8" />
+            <text x="55" y="52" font-family="'Inter', sans-serif" font-weight="bold" font-size="13" fill="#94A3B8"
+              text-anchor="start" letter-spacing="0.1em">ENCODER SECTION</text>
+          </g>
+          <g class="svg-anim" style="transition-delay: 0.2s">
+            <path d="M 290.0 45.0 L 498.0 45.0 L 510.0 57.0 L 510.0 105.0 L 290.0 105.0 Z"
+              fill="rgba(255, 255, 255, 0.05)" stroke="#E2E8F0" stroke-width="1.5" />
+            <path d="M 498.0 45.0 L 498.0 57.0 L 510.0 57.0" fill="none" stroke="#E2E8F0" stroke-width="1.5" />
+            <text x="400" y="75" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="79.0">Original Image</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="105" x2="400" y2="130" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.30000000000000004s" />
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="240.0" y="130.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="400" y="160" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="156.5">Color Space Conversion (RGB to</tspan>
+              <tspan x="400" dy="15">YCbCr)</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="190" x2="400" y2="220" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.5s" />
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="260.0" y="220.0" width="280" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="400" y="250" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="254.0">Split into 8x8 Pixel Blocks</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="280" x2="400" y2="310" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.7s" />
+          <g class="svg-anim" style="transition-delay: 0s">
+            <rect x="240.0" y="310.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="400" y="340" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="336.5">Forward Discrete Cosine Transform</tspan>
+              <tspan x="400" dy="15">(DCT)</tspan>
+            </text>
+          </g>
+          <g class="svg-anim" style="transition-delay: 0.8999999999999999s">
+            <rect x="85.0" y="435.0" width="150" height="50" rx="6" ry="6" fill="rgba(56, 189, 248, 0.1)"
+              stroke="#38BDF8" stroke-width="1.5" />
+            <text x="160" y="460" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="160" y="456.5">Quality Factor</tspan>
+              <tspan x="160" dy="15">(QF) Scaling</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="235" y1="460" x2="238" y2="460" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.8999999999999999s" />
+          <line class="svg-arrow" x1="400" y1="370" x2="400" y2="428" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.8999999999999999s" />
+          <g class="svg-anim" style="transition-delay: 0.9999999999999999s">
+            <rect x="240.0" y="430.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)"
+              stroke="#F87171" stroke-width="2.5" />
+            <text x="400" y="460" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="456.5">Quantization (Divide by Standard</tspan>
+              <tspan x="400" dy="15">Matrix)</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="490" x2="400" y2="588" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 1.0999999999999999s" />
+          <g class="svg-anim" style="transition-delay: 1.2s">
+            <path d="M 210.0 590.0 L 210.0 650.0 A 190.0 12 0 0 0 590.0 650.0 L 590.0 590.0 Z"
+              fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
+            <ellipse cx="400" cy="590.0" rx="190.0" ry="12" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80"
+              stroke-width="1.5" />
+            <text x="400" y="620" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="620.5">Compressed Bitstream (Non-zero</tspan>
+              <tspan x="400" dy="15">Coefficients)</tspan>
+            </text>
+          </g>
+        </svg></div>
+    </div>
+
+    <!-- 15 JPEG Pipeline DECODER -->
+    <div class="slide future">
+      <h2 class="anim" style="margin-bottom:0; font-size:clamp(18px,2.2vw,36px)">JPEG Pipeline: Decoder</h2>
+      <div class="svg-box anim"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 590 800 610" width="100%"
+          height="100%" style="max-height: 80vh; background: transparent;">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+              orient="auto-start-reverse">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#94A3B8" />
+            </marker>
+          </defs>
+          <g class="svg-anim" style="transition-delay: 0.1s">
+            <path d="M 210.0 590.0 L 210.0 650.0 A 190.0 12 0 0 0 590.0 650.0 L 590.0 590.0 Z"
+              fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
+            <ellipse cx="400" cy="590.0" rx="190.0" ry="12" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80"
+              stroke-width="1.5" />
+            <text x="400" y="620" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="620.5">Compressed Bitstream (Non-zero</tspan>
+              <tspan x="400" dy="15">Coefficients)</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="662" x2="400" y2="710" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.2s" />
+          <g class="svg-anim" style="transition-delay: 0.30000000000000004s">
+            <rect x="40" y="680" width="720" height="430" fill="none" stroke="#475569" stroke-width="1.5"
+              stroke-dasharray="6,6" rx="8" ry="8" />
+            <text x="55" y="702" font-family="'Inter', sans-serif" font-weight="bold" font-size="13" fill="#94A3B8"
+              text-anchor="start" letter-spacing="0.1em">DECODER SECTION</text>
+          </g>
+          <g class="svg-anim" style="transition-delay: 0.4s">
+            <rect x="240.0" y="710.0" width="320" height="60" rx="6" ry="6" fill="rgba(56, 189, 248, 0.1)"
+              stroke="#38BDF8" stroke-width="1.5" />
+            <text x="400" y="740" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="736.5">Dequantization (Multiply by Standard</tspan>
+              <tspan x="400" dy="15">Matrix)</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="770" x2="400" y2="800" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.5s" />
+          <g class="svg-anim" style="transition-delay: 0.6s">
+            <rect x="240.0" y="800.0" width="320" height="60" rx="6" ry="6" fill="rgba(56, 189, 248, 0.1)"
+              stroke="#38BDF8" stroke-width="1.5" />
+            <text x="400" y="830" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="826.5">Inverse Discrete Cosine Transform</tspan>
+              <tspan x="400" dy="15">(IDCT)</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="860" x2="400" y2="890" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.7s" />
+          <g class="svg-anim" style="transition-delay: 0.7999999999999999s">
+            <rect x="260.0" y="890.0" width="280" height="60" rx="6" ry="6" fill="rgba(56, 189, 248, 0.1)"
+              stroke="#38BDF8" stroke-width="1.5" />
+            <text x="400" y="920" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="924.0">Merge 8x8 Blocks</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="950" x2="400" y2="980" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 0.8999999999999999s" />
+          <g class="svg-anim" style="transition-delay: 0.9999999999999999s">
+            <rect x="240.0" y="980.0" width="320" height="60" rx="6" ry="6" fill="rgba(56, 189, 248, 0.1)"
+              stroke="#38BDF8" stroke-width="1.5" />
+            <text x="400" y="1010" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="1006.5">Color Space Conversion (YCbCr to</tspan>
+              <tspan x="400" dy="15">RGB)</tspan>
+            </text>
+          </g>
+          <line class="svg-arrow" x1="400" y1="1040" x2="400" y2="1070" stroke="#94A3B8" stroke-width="1.5"
+            marker-end="url(#arrow)" style="transition-delay: 1.0999999999999999s" />
+          <g class="svg-anim" style="transition-delay: 1.2s">
+            <path d="M 280.0 1075.0 L 508.0 1075.0 L 520.0 1087.0 L 520.0 1135.0 L 280.0 1135.0 Z"
+              fill="rgba(255, 255, 255, 0.05)" stroke="#E2E8F0" stroke-width="1.5" />
+            <path d="M 508.0 1075.0 L 508.0 1087.0 L 520.0 1087.0" fill="none" stroke="#E2E8F0" stroke-width="1.5" />
+            <text x="400" y="1105" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0"
+              text-anchor="middle">
+              <tspan x="400" y="1101.5">JPEG Reconstructed Image</tspan>
+              <tspan x="400" dy="15">(Lossy)</tspan>
+            </text>
+          </g>
+          <text x="400" y="1175" font-family="'Inter', sans-serif" font-weight="500" font-size="14" fill="#E2E8F0"
+            text-anchor="middle" class="svg-anim" style="transition-delay: 1.3s">Figure 3: JPEG Compression Pipeline
+            (Lossy)</text>
+        </svg></div>
+    </div>
+
+    <!-- 16 JPEG Results: Eclipse 2 -->
+    <div class="slide future">
+      <h2 class="anim">JPEG Quality: Eclipse 2</h2>
+      <div class="flex-row anim">
+        <div class="col center frag-fade" data-show="1">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=10</strong></p>
+          <div class="img-box" style="width:100%"><img src="solar_eclipse2_JPEG_QF10.png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">597:1</span> · SSIM:
+              0.888</span></p>
+        </div>
+        <div class="col center frag-fade" data-show="2">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=50</strong></p>
+          <div class="img-box" style="width:100%"><img src="solar_eclipse2_JPEG_QF50.png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">418:1</span> · SSIM:
+              0.967</span></p>
+        </div>
+        <div class="col center frag-fade" data-show="3">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=90</strong></p>
+          <div class="img-box" style="width:100%"><img src="solar_eclipse2_JPEG_QF90.png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">188:1</span> · SSIM:
+              0.977</span></p>
+        </div>
+      </div>
+      <div class="callout frag-fade" data-show="4" style="margin-top: 2vh;">
+        <p style="margin:0"><strong>Observation:</strong> Look closely at QF=10—the 8x8 "blockiness" artifacts are
+          extremely visible along the high-contrast edge of the sun.</p>
+      </div>
+    </div>
+
+    <!-- 17 JPEG Results: Eclipse 1 -->
+    <div class="slide future">
+      <h2 class="anim">JPEG Quality: Eclipse 1</h2>
+      <div class="flex-row anim">
+        <div class="col center frag-fade" data-show="1">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=10</strong></p>
+          <div class="img-box" style="width:100%"><img src="solar_eclipse_JPEG_QF10.png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">386:1</span> · SSIM:
+              0.732</span></p>
+        </div>
+        <div class="col center frag-fade" data-show="2">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=50</strong></p>
+          <div class="img-box" style="width:100%"><img src="solar_eclipse_JPEG_QF50.png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">228:1</span> · SSIM:
+              0.886</span></p>
+        </div>
+        <div class="col center frag-fade" data-show="3">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=90</strong></p>
+          <div class="img-box" style="width:100%"><img src="solar_eclipse_JPEG_QF90.png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">59:1</span> · SSIM:
+              0.951</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 18 JPEG Results: Carina Nebula -->
+    <div class="slide future">
+      <h2 class="anim">JPEG Quality: Carina Nebula</h2>
+      <div class="flex-row anim">
+        <div class="col center frag-fade" data-show="1">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=10</strong></p>
+          <div class="img-box" style="width:100%"><img src="Carina_Nebula_JPEG_QF10.png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">172:1</span> · SSIM:
+              0.877</span></p>
+        </div>
+        <div class="col center frag-fade" data-show="2">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=50</strong></p>
+          <div class="img-box" style="width:100%"><img src="Carina_Nebula_JPEG_QF50.png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">100:1</span> · SSIM:
+              0.953</span></p>
+        </div>
+        <div class="col center frag-fade" data-show="3">
+          <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=90</strong></p>
+          <div class="img-box" style="width:100%"><img src="Carina_Nebula_JPEG_QF90.png"></div>
+          <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">39:1</span> · SSIM:
+              0.975</span></p>
+        </div>
+      </div>
+      <div class="callout frag-fade" data-show="4" style="margin-top: 2vh;">
+        <p style="margin:0"><strong>Key Takeaway:</strong> Compared to K-Means, JPEG preserves a much higher SSIM at
+          extreme Compression Ratios because DCT successfully hides data loss in chaotic high-frequency areas.</p>
+      </div>
+    </div>
+
+    <!-- 19 Analysis -->
+    <div class="slide future">
+      <h2 class="anim">Critical Analysis &amp; Trade-offs</h2>
+      <p class="anim">Comparing algorithm performance across all datasets:</p>
+
+      <table class="anim" style="font-size: clamp(12px, 1.4vw, 24px); margin-top: 2vh;">
+        <tr>
+          <th style="background:transparent"></th>
+          <th>Eclipse 2 (Highest Redundancy)</th>
+          <th>Eclipse 1 (Intermediate)</th>
+          <th>Carina Nebula (Complex)</th>
+        </tr>
+        <tr class="frag-fade" data-show="1">
+          <td style="background:rgba(30,41,59,.8); color:var(--accent); font-weight:600">Huffman</td>
+          <td class="amber">CR: 2.56:1<br><span class="green">SSIM: 1.000</span></td>
+          <td class="red">CR: 1.23:1<br><span class="green">SSIM: 1.000</span></td>
+          <td class="red">CR: 1.09:1<br><span class="green">SSIM: 1.000</span></td>
+        </tr>
+        <tr class="frag-fade" data-show="2">
+          <td style="background:rgba(30,41,59,.8); color:var(--accent); font-weight:600">K-Means</td>
+          <td class="green">CR: 16.0:1 (K=8)<br><span class="red">SSIM: 0.959</span></td>
+          <td class="green">CR: 12.0:1 (K=16)<br><span class="amber">SSIM: 0.910</span></td>
+          <td class="amber">CR: 6.0:1 (K=16)<br><span class="amber">SSIM: 0.866</span></td>
+        </tr>
+        <tr class="frag-fade" data-show="3">
+          <td style="background:rgba(30,41,59,.8); color:var(--accent); font-weight:600">JPEG</td>
+          <td class="green">CR: 418:1 (QF=50)<br><span class="green">SSIM: 0.967</span></td>
+          <td class="green">CR: 227:1 (QF=50)<br><span class="amber">SSIM: 0.886</span></td>
+          <td class="green">CR: 100:1 (QF=50)<br><span class="green">SSIM: 0.953</span></td>
+        </tr>
+      </table>
+
+      <div class="callout frag-fade" data-show="4" style="margin-top: 3vh;">
+        <p style="margin:0"><strong>Key Takeaways:</strong></p>
+        <p class="sub" style="margin-top:.8vh;margin-bottom:0">
+          – <strong>Huffman</strong> fails exponentially as visual complexity increases.<br>
+          – <strong>K-Means</strong> struggles with smooth color gradients, requiring higher K values.<br>
+          – <strong>JPEG</strong> dominates in pure ratio/quality tradeoff, consistently delivering >100:1 ratios.
+        </p>
+      </div>
+    </div>
+
+    <!-- 20 Conclusion -->
+    <div class="slide future">
+      <h2 class="anim">Comprehensive Final Verdict</h2>
+      <div class="anim" style="max-width:95%;margin-top:1.5vh">
+        <ul style="list-style:none;margin-bottom:3vh">
+          <li class="frag-fade" data-show="1" style="padding:1vh 0">
+            <span class="stat-pill" style="margin-bottom:1vh">🔬 <strong>Statistical Redundancy
+                (Huffman)</strong></span>
+            <p class="sub" style="padding-left:1vw;max-width:90%">Provides a mathematically guaranteed lossless baseline
+              but fails exponentially on continuous-tone photographs due to the lack of spatial frequency analysis.
+              Strictly suited for raw data archiving.</p>
+          </li>
+          <li class="frag-fade" data-show="2" style="padding:1vh 0">
+            <span class="stat-pill" style="margin-bottom:1vh">🎨 <strong>Color Quantization (K-Means)</strong></span>
+            <p class="sub" style="padding-left:1vw;max-width:90%">Successfully isolates dominant colors for synthetic
+              imagery, but introduces harsh banding on smooth photographic gradients unless K is prohibitively high.</p>
+          </li>
+          <li class="frag-fade" data-show="3" style="padding:1vh 0">
+            <span class="stat-pill" style="margin-bottom:1vh">🌐 <strong>Frequency Masking (JPEG)</strong></span>
+            <p class="sub" style="padding-left:1vw;max-width:90%">The DCT paradigm completely redefines compression by
+              discarding imperceptible high-frequency data, yielding ratios exceeding 100:1 while maintaining excellent
+              perceptual fidelity.</p>
+          </li>
+        </ul>
+        <div class="callout frag-fade" data-show="4" style="margin-top:1vh">
+          <p style="margin:0;font-size:clamp(14px,1.6vw,22px)"><strong>Final Verdict:</strong> Huffman is the mandatory
+            choice for archiving raw scientific data where absolute fidelity is required. JPEG is the superior choice
+            for visual web streaming or presentation.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 17 Q&A -->
+    <div class="slide future center">
+      <div class="title-box anim">
+        <h1
+          style="font-size:clamp(44px,7vw,110px);margin:0;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
+          Thank You!</h1>
+      </div>
+    </div>
+
   </div>
-</div>
 
-<!-- 14 JPEG Pipeline ENCODER -->
-<div class="slide future">
-  <h2 class="anim" style="margin-bottom:0; font-size:clamp(18px,2.2vw,36px)">JPEG Pipeline: Encoder</h2>
-  <div class="svg-box anim"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 680" width="100%" height="100%" style="max-height: 80vh; background: transparent;">
-<defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#94A3B8" />
-    </marker>
-  </defs>
-<g class="svg-anim" style="transition-delay: 0.1s"><rect x="40" y="30" width="720" height="540" fill="none" stroke="#475569" stroke-width="1.5" stroke-dasharray="6,6" rx="8" ry="8" />
-<text x="55" y="52" font-family="'Inter', sans-serif" font-weight="bold" font-size="13" fill="#94A3B8" text-anchor="start" letter-spacing="0.1em">ENCODER SECTION</text></g>
-<g class="svg-anim" style="transition-delay: 0.2s"><path d="M 290.0 45.0 L 498.0 45.0 L 510.0 57.0 L 510.0 105.0 L 290.0 105.0 Z" fill="rgba(255, 255, 255, 0.05)" stroke="#E2E8F0" stroke-width="1.5" />
-<path d="M 498.0 45.0 L 498.0 57.0 L 510.0 57.0" fill="none" stroke="#E2E8F0" stroke-width="1.5" />
-<text x="400" y="75" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="79.0">Original Image</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="105" x2="400" y2="130" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.30000000000000004s" />
-<g class="svg-anim" style="transition-delay: 0s"><rect x="240.0" y="130.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="400" y="160" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="156.5">Color Space Conversion (RGB to</tspan>
-<tspan x="400" dy="15">YCbCr)</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="190" x2="400" y2="220" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.5s" />
-<g class="svg-anim" style="transition-delay: 0s"><rect x="260.0" y="220.0" width="280" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="400" y="250" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="254.0">Split into 8x8 Pixel Blocks</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="280" x2="400" y2="310" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.7s" />
-<g class="svg-anim" style="transition-delay: 0s"><rect x="240.0" y="310.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="400" y="340" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="336.5">Forward Discrete Cosine Transform</tspan>
-<tspan x="400" dy="15">(DCT)</tspan>
-</text></g>
-<g class="svg-anim" style="transition-delay: 0.8999999999999999s"><rect x="85.0" y="435.0" width="150" height="50" rx="6" ry="6" fill="rgba(56, 189, 248, 0.1)" stroke="#38BDF8" stroke-width="1.5" />
-<text x="160" y="460" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="160" y="456.5">Quality Factor</tspan>
-<tspan x="160" dy="15">(QF) Scaling</tspan>
-</text></g>
-<line class="svg-arrow" x1="235" y1="460" x2="238" y2="460" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.8999999999999999s" />
-<line class="svg-arrow" x1="400" y1="370" x2="400" y2="428" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.8999999999999999s" />
-<g class="svg-anim" style="transition-delay: 0.9999999999999999s"><rect x="240.0" y="430.0" width="320" height="60" rx="6" ry="6" fill="rgba(248, 113, 113, 0.1)" stroke="#F87171" stroke-width="2.5" />
-<text x="400" y="460" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="456.5">Quantization (Divide by Standard</tspan>
-<tspan x="400" dy="15">Matrix)</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="490" x2="400" y2="588" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 1.0999999999999999s" />
-<g class="svg-anim" style="transition-delay: 1.2s"><path d="M 210.0 590.0 L 210.0 650.0 A 190.0 12 0 0 0 590.0 650.0 L 590.0 590.0 Z" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
-<ellipse cx="400" cy="590.0" rx="190.0" ry="12" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
-<text x="400" y="620" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="620.5">Compressed Bitstream (Non-zero</tspan>
-<tspan x="400" dy="15">Coefficients)</tspan>
-</text></g>
-</svg></div>
-</div>
+  <nav class="nav"><button id="btn-prev">▲</button><span class="counter" id="counter">1 / 17</span><button
+      id="btn-next">▼</button><button id="btn-fs">⛶</button></nav>
 
-<!-- 15 JPEG Pipeline DECODER -->
-<div class="slide future">
-  <h2 class="anim" style="margin-bottom:0; font-size:clamp(18px,2.2vw,36px)">JPEG Pipeline: Decoder</h2>
-  <div class="svg-box anim"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 590 800 610" width="100%" height="100%" style="max-height: 80vh; background: transparent;">
-<defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#94A3B8" />
-    </marker>
-  </defs>
-<g class="svg-anim" style="transition-delay: 0.1s"><path d="M 210.0 590.0 L 210.0 650.0 A 190.0 12 0 0 0 590.0 650.0 L 590.0 590.0 Z" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
-<ellipse cx="400" cy="590.0" rx="190.0" ry="12" fill="rgba(74, 222, 128, 0.1)" stroke="#4ADE80" stroke-width="1.5" />
-<text x="400" y="620" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="620.5">Compressed Bitstream (Non-zero</tspan>
-<tspan x="400" dy="15">Coefficients)</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="662" x2="400" y2="710" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.2s" />
-<g class="svg-anim" style="transition-delay: 0.30000000000000004s"><rect x="40" y="680" width="720" height="430" fill="none" stroke="#475569" stroke-width="1.5" stroke-dasharray="6,6" rx="8" ry="8" />
-<text x="55" y="702" font-family="'Inter', sans-serif" font-weight="bold" font-size="13" fill="#94A3B8" text-anchor="start" letter-spacing="0.1em">DECODER SECTION</text></g>
-<g class="svg-anim" style="transition-delay: 0.4s"><rect x="240.0" y="710.0" width="320" height="60" rx="6" ry="6" fill="rgba(56, 189, 248, 0.1)" stroke="#38BDF8" stroke-width="1.5" />
-<text x="400" y="740" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="736.5">Dequantization (Multiply by Standard</tspan>
-<tspan x="400" dy="15">Matrix)</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="770" x2="400" y2="800" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.5s" />
-<g class="svg-anim" style="transition-delay: 0.6s"><rect x="240.0" y="800.0" width="320" height="60" rx="6" ry="6" fill="rgba(56, 189, 248, 0.1)" stroke="#38BDF8" stroke-width="1.5" />
-<text x="400" y="830" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="826.5">Inverse Discrete Cosine Transform</tspan>
-<tspan x="400" dy="15">(IDCT)</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="860" x2="400" y2="890" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.7s" />
-<g class="svg-anim" style="transition-delay: 0.7999999999999999s"><rect x="260.0" y="890.0" width="280" height="60" rx="6" ry="6" fill="rgba(56, 189, 248, 0.1)" stroke="#38BDF8" stroke-width="1.5" />
-<text x="400" y="920" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="924.0">Merge 8x8 Blocks</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="950" x2="400" y2="980" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 0.8999999999999999s" />
-<g class="svg-anim" style="transition-delay: 0.9999999999999999s"><rect x="240.0" y="980.0" width="320" height="60" rx="6" ry="6" fill="rgba(56, 189, 248, 0.1)" stroke="#38BDF8" stroke-width="1.5" />
-<text x="400" y="1010" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="1006.5">Color Space Conversion (YCbCr to</tspan>
-<tspan x="400" dy="15">RGB)</tspan>
-</text></g>
-<line class="svg-arrow" x1="400" y1="1040" x2="400" y2="1070" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow)" style="transition-delay: 1.0999999999999999s" />
-<g class="svg-anim" style="transition-delay: 1.2s"><path d="M 280.0 1075.0 L 508.0 1075.0 L 520.0 1087.0 L 520.0 1135.0 L 280.0 1135.0 Z" fill="rgba(255, 255, 255, 0.05)" stroke="#E2E8F0" stroke-width="1.5" />
-<path d="M 508.0 1075.0 L 508.0 1087.0 L 520.0 1087.0" fill="none" stroke="#E2E8F0" stroke-width="1.5" />
-<text x="400" y="1105" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#E2E8F0" text-anchor="middle">
-<tspan x="400" y="1101.5">JPEG Reconstructed Image</tspan>
-<tspan x="400" dy="15">(Lossy)</tspan>
-</text></g>
-<text x="400" y="1175" font-family="'Inter', sans-serif" font-weight="500" font-size="14" fill="#E2E8F0" text-anchor="middle" class="svg-anim" style="transition-delay: 1.3s">Figure 3: JPEG Compression Pipeline (Lossy)</text>
-</svg></div>
-</div>
+  <script>
+    (() => {
+      const slides = document.querySelectorAll('.slide'), total = slides.length;
+      const counter = document.getElementById('counter'), bar = document.getElementById('progress');
+      let cur = 0, fragCur = 0, fragMax = 0, direction = 1;
 
-<!-- 16 JPEG Results: Eclipse 2 -->
-<div class="slide future">
-  <h2 class="anim">JPEG Quality: Eclipse 2</h2>
-  <div class="flex-row anim">
-    <div class="col center frag-fade" data-show="1">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=10</strong></p>
-      <div class="img-box" style="width:100%"><img src="solar_eclipse2_JPEG_QF10.png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">597:1</span> · SSIM: 0.888</span></p>
-    </div>
-    <div class="col center frag-fade" data-show="2">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=50</strong></p>
-      <div class="img-box" style="width:100%"><img src="solar_eclipse2_JPEG_QF50.png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">418:1</span> · SSIM: 0.967</span></p>
-    </div>
-    <div class="col center frag-fade" data-show="3">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=90</strong></p>
-      <div class="img-box" style="width:100%"><img src="solar_eclipse2_JPEG_QF90.png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">188:1</span> · SSIM: 0.977</span></p>
-    </div>
-  </div>
-  <div class="callout frag-fade" data-show="4" style="margin-top: 2vh;">
-    <p style="margin:0"><strong>Observation:</strong> Look closely at QF=10—the 8x8 "blockiness" artifacts are extremely visible along the high-contrast edge of the sun.</p>
-  </div>
-</div>
-
-<!-- 17 JPEG Results: Eclipse 1 -->
-<div class="slide future">
-  <h2 class="anim">JPEG Quality: Eclipse 1</h2>
-  <div class="flex-row anim">
-    <div class="col center frag-fade" data-show="1">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=10</strong></p>
-      <div class="img-box" style="width:100%"><img src="solar_eclipse_JPEG_QF10.png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">386:1</span> · SSIM: 0.732</span></p>
-    </div>
-    <div class="col center frag-fade" data-show="2">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=50</strong></p>
-      <div class="img-box" style="width:100%"><img src="solar_eclipse_JPEG_QF50.png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">228:1</span> · SSIM: 0.886</span></p>
-    </div>
-    <div class="col center frag-fade" data-show="3">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=90</strong></p>
-      <div class="img-box" style="width:100%"><img src="solar_eclipse_JPEG_QF90.png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">59:1</span> · SSIM: 0.951</span></p>
-    </div>
-  </div>
-</div>
-
-<!-- 18 JPEG Results: Carina Nebula -->
-<div class="slide future">
-  <h2 class="anim">JPEG Quality: Carina Nebula</h2>
-  <div class="flex-row anim">
-    <div class="col center frag-fade" data-show="1">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=10</strong></p>
-      <div class="img-box" style="width:100%"><img src="Carina_Nebula_JPEG_QF10.png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">172:1</span> · SSIM: 0.877</span></p>
-    </div>
-    <div class="col center frag-fade" data-show="2">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=50</strong></p>
-      <div class="img-box" style="width:100%"><img src="Carina_Nebula_JPEG_QF50.png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">100:1</span> · SSIM: 0.953</span></p>
-    </div>
-    <div class="col center frag-fade" data-show="3">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=90</strong></p>
-      <div class="img-box" style="width:100%"><img src="Carina_Nebula_JPEG_QF90.png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">39:1</span> · SSIM: 0.975</span></p>
-    </div>
-  </div>
-  <div class="callout frag-fade" data-show="4" style="margin-top: 2vh;">
-    <p style="margin:0"><strong>Key Takeaway:</strong> Compared to K-Means, JPEG preserves a much higher SSIM at extreme Compression Ratios because DCT successfully hides data loss in chaotic high-frequency areas.</p>
-  </div>
-</div>
-
-<!-- 19 Analysis -->
-<div class="slide future">
-  <h2 class="anim">Critical Analysis &amp; Trade-offs</h2>
-  <p class="anim">Comparing algorithm performance across all datasets:</p>
-  
-  <table class="anim" style="font-size: clamp(12px, 1.4vw, 24px); margin-top: 2vh;">
-    <tr>
-      <th style="background:transparent"></th>
-      <th>Eclipse 2 (Highest Redundancy)</th>
-      <th>Eclipse 1 (Intermediate)</th>
-      <th>Carina Nebula (Complex)</th>
-    </tr>
-    <tr class="frag-fade" data-show="1">
-      <td style="background:rgba(30,41,59,.8); color:var(--accent); font-weight:600">Huffman</td>
-      <td class="amber">CR: 2.56:1<br><span class="green">SSIM: 1.000</span></td>
-      <td class="red">CR: 1.23:1<br><span class="green">SSIM: 1.000</span></td>
-      <td class="red">CR: 1.09:1<br><span class="green">SSIM: 1.000</span></td>
-    </tr>
-    <tr class="frag-fade" data-show="2">
-      <td style="background:rgba(30,41,59,.8); color:var(--accent); font-weight:600">K-Means</td>
-      <td class="green">CR: 24.0:1 (K=4)<br><span class="red">SSIM: 0.825</span></td>
-      <td class="green">CR: 12.0:1 (K=16)<br><span class="amber">SSIM: 0.910</span></td>
-      <td class="amber">CR: 6.0:1 (K=16)<br><span class="amber">SSIM: 0.866</span></td>
-    </tr>
-    <tr class="frag-fade" data-show="3">
-      <td style="background:rgba(30,41,59,.8); color:var(--accent); font-weight:600">JPEG</td>
-      <td class="green">CR: 418:1 (QF=50)<br><span class="green">SSIM: 0.967</span></td>
-      <td class="green">CR: 227:1 (QF=50)<br><span class="amber">SSIM: 0.886</span></td>
-      <td class="green">CR: 100:1 (QF=50)<br><span class="green">SSIM: 0.953</span></td>
-    </tr>
-  </table>
-  
-  <div class="callout frag-fade" data-show="4" style="margin-top: 3vh;">
-    <p style="margin:0"><strong>Key Takeaways:</strong></p>
-    <p class="sub" style="margin-top:.8vh;margin-bottom:0">
-      – <strong>Huffman</strong> fails exponentially as visual complexity increases.<br>
-      – <strong>K-Means</strong> struggles with smooth color gradients, requiring higher K values.<br>
-      – <strong>JPEG</strong> dominates in pure ratio/quality tradeoff, consistently delivering >100:1 ratios.
-    </p>
-  </div>
-</div>
-
-<!-- 20 Conclusion -->
-<div class="slide future">
-  <h2 class="anim">Comprehensive Final Verdict</h2>
-  <div class="anim" style="max-width:95%;margin-top:1.5vh">
-    <ul style="list-style:none;margin-bottom:3vh">
-      <li class="frag-fade" data-show="1" style="padding:1vh 0">
-        <span class="stat-pill" style="margin-bottom:1vh">🔬 <strong>Statistical Redundancy (Huffman)</strong></span>
-        <p class="sub" style="padding-left:1vw;max-width:90%">Provides a mathematically guaranteed lossless baseline but fails exponentially on continuous-tone photographs due to the lack of spatial frequency analysis. Strictly suited for raw data archiving.</p>
-      </li>
-      <li class="frag-fade" data-show="2" style="padding:1vh 0">
-        <span class="stat-pill" style="margin-bottom:1vh">🎨 <strong>Color Quantization (K-Means)</strong></span>
-        <p class="sub" style="padding-left:1vw;max-width:90%">Successfully isolates dominant colors for synthetic imagery, but introduces harsh banding on smooth photographic gradients unless K is prohibitively high.</p>
-      </li>
-      <li class="frag-fade" data-show="3" style="padding:1vh 0">
-        <span class="stat-pill" style="margin-bottom:1vh">🌐 <strong>Frequency Masking (JPEG)</strong></span>
-        <p class="sub" style="padding-left:1vw;max-width:90%">The DCT paradigm completely redefines compression by discarding imperceptible high-frequency data, yielding ratios exceeding 100:1 while maintaining excellent perceptual fidelity.</p>
-      </li>
-    </ul>
-    <div class="callout frag-fade" data-show="4" style="margin-top:1vh">
-      <p style="margin:0;font-size:clamp(14px,1.6vw,22px)"><strong>Final Verdict:</strong> Huffman is the mandatory choice for archiving raw scientific data where absolute fidelity is required. JPEG is the superior choice for visual web streaming or presentation.</p>
-    </div>
-  </div>
-</div>
-
-<!-- 17 Q&A -->
-<div class="slide future center">
-  <div class="title-box anim">
-    <h1 style="font-size:clamp(44px,7vw,110px);margin:0;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Thank You!</h1>
-  </div>
-</div>
-
-</div>
-
-<nav class="nav"><button id="btn-prev">▲</button><span class="counter" id="counter">1 / 17</span><button id="btn-next">▼</button><button id="btn-fs">⛶</button></nav>
-
-<script>
-(()=>{
-  const slides=document.querySelectorAll('.slide'),total=slides.length;
-  const counter=document.getElementById('counter'),bar=document.getElementById('progress');
-  let cur=0, fragCur=0, fragMax=0, direction=1;
-
-  function renderFrags() {
-    const slide = slides[cur];
-    const frags = slide.querySelectorAll('[data-show]');
-    frags.forEach(f => {
-      const show = parseInt(f.getAttribute('data-show')) || 0;
-      const hide = parseInt(f.getAttribute('data-hide')) || 9999;
-      if (fragCur >= show && fragCur < hide) {
-        f.classList.add('visible');
-      } else {
-        f.classList.remove('visible');
+      function renderFrags() {
+        const slide = slides[cur];
+        const frags = slide.querySelectorAll('[data-show]');
+        frags.forEach(f => {
+          const show = parseInt(f.getAttribute('data-show')) || 0;
+          const hide = parseInt(f.getAttribute('data-hide')) || 9999;
+          if (fragCur >= show && fragCur < hide) {
+            f.classList.add('visible');
+          } else {
+            f.classList.remove('visible');
+          }
+        });
       }
-    });
-  }
 
-  function renderSlide() {
-    slides.forEach((s,i)=>{
-      s.classList.remove('past', 'active', 'future');
-      if (i < cur) s.classList.add('past');
-      else if (i === cur) s.classList.add('active');
-      else s.classList.add('future');
-    });
-    
-    const slide = slides[cur];
-    const frags = Array.from(slide.querySelectorAll('[data-show]'));
-    if (frags.length > 0) {
-      fragMax = Math.max(...frags.map(f => parseInt(f.getAttribute('data-hide') || f.getAttribute('data-show'))));
-    } else {
-      fragMax = 0;
-    }
-    fragCur = direction === 1 ? 0 : fragMax;
-    renderFrags();
+      function renderSlide() {
+        slides.forEach((s, i) => {
+          s.classList.remove('past', 'active', 'future');
+          if (i < cur) s.classList.add('past');
+          else if (i === cur) s.classList.add('active');
+          else s.classList.add('future');
+        });
 
-    counter.textContent=`${cur+1} / ${total}`;
-    bar.style.height=`${((cur+1)/total)*100}%`;
-  }
-  
-  function next(){
-    if(fragCur < fragMax) {
-      fragCur++; renderFrags();
-    } else if (cur < total - 1) {
-      cur++; direction=1; renderSlide();
-    }
-  }
-  function prev(){
-    if(fragCur > 0) {
-      fragCur--; renderFrags();
-    } else if (cur > 0) {
-      cur--; direction=-1; renderSlide();
-    }
-  }
+        const slide = slides[cur];
+        const frags = Array.from(slide.querySelectorAll('[data-show]'));
+        if (frags.length > 0) {
+          fragMax = Math.max(...frags.map(f => parseInt(f.getAttribute('data-hide') || f.getAttribute('data-show'))));
+        } else {
+          fragMax = 0;
+        }
+        fragCur = direction === 1 ? 0 : fragMax;
+        renderFrags();
 
-  document.addEventListener('keydown',e=>{
-    if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '||e.key==='PageDown'){e.preventDefault();next()}
-    if(e.key==='ArrowLeft'||e.key==='ArrowUp'||e.key==='Backspace'||e.key==='PageUp'){e.preventDefault();prev()}
-    if(e.key==='Home'){e.preventDefault();cur=0; direction=1; renderSlide()}
-    if(e.key==='End'){e.preventDefault();cur=total-1; direction=1; renderSlide()}
-    if(e.key==='f'||e.key==='F'){e.preventDefault();document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
-  });
-  
-  // Mouse wheel scrolling for vertical timeline
-  window.addEventListener('wheel', e => {
-    if(e.deltaY > 50) next();
-    else if (e.deltaY < -50) prev();
-  }, {passive: true});
+        counter.textContent = `${cur + 1} / ${total}`;
+        bar.style.height = `${((cur + 1) / total) * 100}%`;
+      }
 
-  // Click anywhere to advance (unless clicking nav buttons)
-  document.addEventListener('click', e => {
-    if (!e.target.closest('.nav') && !e.target.closest('a') && !e.target.closest('code')) {
-      next();
-    }
-  });
+      function next() {
+        if (fragCur < fragMax) {
+          fragCur++; renderFrags();
+        } else if (cur < total - 1) {
+          cur++; direction = 1; renderSlide();
+        }
+      }
+      function prev() {
+        if (fragCur > 0) {
+          fragCur--; renderFrags();
+        } else if (cur > 0) {
+          cur--; direction = -1; renderSlide();
+        }
+      }
 
-  document.getElementById('btn-next').onclick=next;
-  document.getElementById('btn-prev').onclick=prev;
-  document.getElementById('btn-fs').onclick=()=>{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()};
-  renderSlide();
-})();
-</script>
+      document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next() }
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'Backspace' || e.key === 'PageUp') { e.preventDefault(); prev() }
+        if (e.key === 'Home') { e.preventDefault(); cur = 0; direction = 1; renderSlide() }
+        if (e.key === 'End') { e.preventDefault(); cur = total - 1; direction = 1; renderSlide() }
+        if (e.key === 'f' || e.key === 'F') { e.preventDefault(); document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen() }
+      });
+
+      // Mouse wheel scrolling for vertical timeline
+      window.addEventListener('wheel', e => {
+        if (e.deltaY > 50) next();
+        else if (e.deltaY < -50) prev();
+      }, { passive: true });
+
+      // Click anywhere to advance (unless clicking nav buttons)
+      document.addEventListener('click', e => {
+        if (!e.target.closest('.nav') && !e.target.closest('a') && !e.target.closest('code')) {
+          next();
+        }
+      });
+
+      document.getElementById('btn-next').onclick = next;
+      document.getElementById('btn-prev').onclick = prev;
+      document.getElementById('btn-fs').onclick = () => { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen() };
+      renderSlide();
+    })();
+  </script>
 </body>
+
 </html>
