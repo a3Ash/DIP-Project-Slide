@@ -137,7 +137,7 @@
     
     .expl-box { background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border-radius: 12px; border: var(--glass-border); font-size: clamp(14px, 1.5vw, 24px); color: var(--text); max-height: 0; margin: 0 0 0 1vw; padding: 0 1.5vw; opacity: 0; transition: all 0.5s var(--ease-out); overflow: hidden; box-shadow: var(--glass-shadow); position:relative; }
     .expl-box::before { content:''; position:absolute; inset:0; border-radius:12px; box-shadow:var(--glass-inset); pointer-events:none; }
-    .expl-box.visible { opacity: 1; transform: translateX(0); max-height: 200px; padding: 1.5vh 1.5vw; margin-bottom: 1.5vh; }
+    .expl-box.visible { opacity: 1; transform: translateX(0); max-height: 500px; padding: 1.5vh 1.5vw; margin-bottom: 1.5vh; }
     
     .callout.frag { max-height: 0; padding: 0 2vw; margin-top: 0; border: none; opacity: 0; }
     .callout.frag.visible { opacity: 1; transform: translateY(0); max-height: 250px; padding: 2vh 2vw; margin-top: 1.5vh; border: var(--glass-border); }
@@ -167,6 +167,29 @@
     <p class="sub" style="margin-bottom:2.5vh;letter-spacing:.18em;margin-top:0">CSE 4106 · Digital Image Processing</p>
     <h1 style="max-width:90%">Investigation and Performance Evaluation of<br>Image Compression Algorithms</h1>
     <p class="sub" style="margin-top:4vh;max-width:70%;margin-bottom:0">Tackling the constraints of storage and bandwidth in the real world.</p>
+  </div>
+</div>
+
+<!-- 02 Fundamentals -->
+<div class="slide future">
+  <h2 class="anim">Compression Fundamentals</h2>
+  <div class="flex-row anim" style="margin-top: 5vh; gap: 4vw">
+    <div class="col">
+      <h3 class="frag-fade" data-show="1" style="color:var(--accent); margin-bottom: 2vh; font-size:clamp(16px,2vw,28px)">Lossless Compression</h3>
+      <div class="expl-box" data-show="2" style="font-size:clamp(14px,1.5vw,22px)">
+        <strong>Data is perfectly preserved.</strong><br><br>
+        The decompressed image is mathematically identical to the original. It removes statistical redundancy without permanently destroying any pixels. Ideal for scientific data or medical imaging.<br><br>
+        <span style="color:var(--accent)"><strong>Examples:</strong></span> PNG, RAW, TIFF (LZW), FLAC, ZIP.
+      </div>
+    </div>
+    <div class="col">
+      <h3 class="frag-fade" data-show="3" style="color:var(--accent2); margin-bottom: 2vh; font-size:clamp(16px,2vw,28px)">Lossy Compression</h3>
+      <div class="expl-box" data-show="4" style="font-size:clamp(14px,1.5vw,22px)">
+        <strong>Throwing away imperceptible data.</strong><br><br>
+        Permanently discards high-frequency information that the human eye struggles to perceive. This achieves drastically higher compression ratios at the cost of perfect fidelity.<br><br>
+        <span style="color:var(--accent2)"><strong>Examples:</strong></span> JPEG, WebP (lossy), MP4, MP3, K-Means Quantization.
+      </div>
+    </div>
   </div>
 </div>
 
@@ -349,6 +372,12 @@
       <p class="sub" style="margin-top:1vh"><span class="stat-pill"><span class="highlight">CR: 1.09 : 1</span></span></p>
     </div>
   </div>
+  <div class="callout frag-fade" data-show="4" style="margin-top: 2vh;">
+    <p style="margin:0"><strong>Key Takeaway:</strong></p>
+    <p class="sub" style="margin-top:.8vh;margin-bottom:0">
+      <strong>Eclipse 2</strong> achieves a massive CR due to redundant black space (low entropy). In contrast, the <strong>Carina Nebula's</strong> unique star pixels generate inefficient trees, resulting in a much poorer CR.
+    </p>
+  </div>
 </div>
 
 <!-- 07 K-Means Theory -->
@@ -473,6 +502,9 @@ quantized_image = kmeans.cluster_centers_[labels].reshape(image_array.shape)</co
       <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">16.0 : 1</span> · SSIM: 0.959</span></p>
     </div>
   </div>
+  <div class="callout frag-fade" data-show="3" style="margin-top: 2vh;">
+    <p style="margin:0"><strong>Observation:</strong> Notice the severe visual "banding" and posterization artifacts in the dark space when K is aggressively reduced.</p>
+  </div>
 </div>
 
 <!-- 11 K-Means Results: Eclipse 1 -->
@@ -490,6 +522,9 @@ quantized_image = kmeans.cluster_centers_[labels].reshape(image_array.shape)</co
       <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">9.6 : 1</span> · SSIM: 0.960</span></p>
     </div>
   </div>
+  <div class="callout frag-fade" data-show="3" style="margin-top: 2vh;">
+    <p style="margin:0"><strong>Observation:</strong> A moderate image reacts reasonably well at higher K, but notice the inverse relationship: as K drops, CR skyrockets, but SSIM strictly crashes.</p>
+  </div>
 </div>
 
 <!-- 12 K-Means Results: Carina Nebula -->
@@ -506,6 +541,9 @@ quantized_image = kmeans.cluster_centers_[labels].reshape(image_array.shape)</co
       <div class="img-box" style="width:100%"><img src="Carina_Nebula_color_quantization_(K32_colors).png"></div>
       <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">4.8 : 1</span> · SSIM: 0.877</span></p>
     </div>
+  </div>
+  <div class="callout frag-fade" data-show="3" style="margin-top: 2vh;">
+    <p style="margin:0"><strong>Observation:</strong> On a high-detail image, K-Means violently clusters out the fine stars and structural details, destroying visual fidelity.</p>
   </div>
 </div>
 
@@ -653,6 +691,9 @@ idct_block  = cv2.idct(dequantized)</code></pre>
       <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">188:1</span> · SSIM: 0.977</span></p>
     </div>
   </div>
+  <div class="callout frag-fade" data-show="4" style="margin-top: 2vh;">
+    <p style="margin:0"><strong>Observation:</strong> Look closely at QF=10—the 8x8 "blockiness" artifacts are extremely visible along the high-contrast edge of the sun.</p>
+  </div>
 </div>
 
 <!-- 17 JPEG Results: Eclipse 1 -->
@@ -696,6 +737,9 @@ idct_block  = cv2.idct(dequantized)</code></pre>
       <div class="img-box" style="width:100%"><img src="Carina_Nebula_JPEG_QF90.png"></div>
       <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">39:1</span> · SSIM: 0.975</span></p>
     </div>
+  </div>
+  <div class="callout frag-fade" data-show="4" style="margin-top: 2vh;">
+    <p style="margin:0"><strong>Key Takeaway:</strong> Compared to K-Means, JPEG preserves a much higher SSIM at extreme Compression Ratios because DCT successfully hides data loss in chaotic high-frequency areas.</p>
   </div>
 </div>
 
@@ -760,7 +804,7 @@ idct_block  = cv2.idct(dequantized)</code></pre>
       </li>
     </ul>
     <div class="callout frag-fade" data-show="4" style="margin-top:1vh">
-      <p style="margin:0;font-size:clamp(14px,1.6vw,28px)"><strong>Final Synthesis:</strong> Ultimately, the choice of algorithm is strictly dictated by the domain: Huffman for absolute data integrity, K-Means for paletted graphics reduction, and JPEG for human-consumed visual media streaming.</p>
+      <p style="margin:0;font-size:clamp(14px,1.6vw,22px)"><strong>Final Verdict:</strong> Huffman is the mandatory choice for archiving raw scientific data where absolute fidelity is required. JPEG is the superior choice for visual web streaming or presentation.</p>
     </div>
   </div>
 </div>
