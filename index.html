@@ -458,29 +458,58 @@ quantized_image = kmeans.cluster_centers_[labels].reshape(image_array.shape)</co
 </svg></div>
 </div>
 
-<!-- 10 K-Means Results -->
+<!-- 10 K-Means Results: Eclipse 2 -->
 <div class="slide future">
-  <h2 class="anim">K-Means: Visual Artifacts</h2>
+  <h2 class="anim">K-Means: Eclipse 2</h2>
   <div class="flex-row anim">
     <div class="col center frag-fade" data-show="1">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>Eclipse 2 (K=4)</strong></p>
+      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=4 Colors</strong></p>
       <div class="img-box" style="width:100%"><img src="solar_eclipse2_color_quantization_(K4_colors).png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">24.00 : 1</span> · SSIM: 0.825</span></p>
+      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">24.0 : 1</span> · SSIM: 0.825</span></p>
     </div>
     <div class="col center frag-fade" data-show="2">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>Eclipse 1 (K=16)</strong></p>
-      <div class="img-box" style="width:100%"><img src="solar_eclipse_color_quantization_(K16_colors).png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">12.00 : 1</span> · SSIM: 0.910</span></p>
-    </div>
-    <div class="col center frag-fade" data-show="3">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>Carina Nebula (K=16)</strong></p>
-      <div class="img-box" style="width:100%"><img src="Carina_Nebula_color_quantization_(K16_colors).png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">6.00 : 1</span> · SSIM: 0.866</span></p>
+      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=8 Colors</strong></p>
+      <div class="img-box" style="width:100%"><img src="solar_eclipse2_color_quantization_(K8_colors).png"></div>
+      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">16.0 : 1</span> · SSIM: 0.959</span></p>
     </div>
   </div>
 </div>
 
-<!-- 11 JPEG Theory -->
+<!-- 11 K-Means Results: Eclipse 1 -->
+<div class="slide future">
+  <h2 class="anim">K-Means: Eclipse 1</h2>
+  <div class="flex-row anim">
+    <div class="col center frag-fade" data-show="1">
+      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=16 Colors</strong></p>
+      <div class="img-box" style="width:100%"><img src="solar_eclipse_color_quantization_(K16_colors).png"></div>
+      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">12.0 : 1</span> · SSIM: 0.910</span></p>
+    </div>
+    <div class="col center frag-fade" data-show="2">
+      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=32 Colors</strong></p>
+      <div class="img-box" style="width:100%"><img src="solar_eclipse_color_quantization_(K32_colors).png"></div>
+      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">9.6 : 1</span> · SSIM: 0.960</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- 12 K-Means Results: Carina Nebula -->
+<div class="slide future">
+  <h2 class="anim">K-Means: Carina Nebula</h2>
+  <div class="flex-row anim">
+    <div class="col center frag-fade" data-show="1">
+      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=16 Colors</strong></p>
+      <div class="img-box" style="width:100%"><img src="Carina_Nebula_color_quantization_(K16_colors).png"></div>
+      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">6.0 : 1</span> · SSIM: 0.866</span></p>
+    </div>
+    <div class="col center frag-fade" data-show="2">
+      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>K=32 Colors</strong></p>
+      <div class="img-box" style="width:100%"><img src="Carina_Nebula_color_quantization_(K32_colors).png"></div>
+      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">4.8 : 1</span> · SSIM: 0.877</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- 13 JPEG Theory -->
 <div class="slide future">
   <h2 class="anim">Advanced Lossy: JPEG Pipeline</h2>
   <p class="frag-fade" data-show="1"><strong>DCT:</strong> Drops high frequencies the human eye cannot perceive.</p>
@@ -498,7 +527,7 @@ idct_block  = cv2.idct(dequantized)</code></pre>
   </div>
 </div>
 
-<!-- 12 JPEG Pipeline ENCODER -->
+<!-- 14 JPEG Pipeline ENCODER -->
 <div class="slide future">
   <h2 class="anim" style="margin-bottom:0; font-size:clamp(18px,2.2vw,36px)">JPEG Pipeline: Encoder</h2>
   <div class="svg-box anim"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 680" width="100%" height="100%" style="max-height: 80vh; background: transparent;">
@@ -553,7 +582,7 @@ idct_block  = cv2.idct(dequantized)</code></pre>
 </svg></div>
 </div>
 
-<!-- 13 JPEG Pipeline DECODER -->
+<!-- 15 JPEG Pipeline DECODER -->
 <div class="slide future">
   <h2 class="anim" style="margin-bottom:0; font-size:clamp(18px,2.2vw,36px)">JPEG Pipeline: Decoder</h2>
   <div class="svg-box anim"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 590 800 610" width="100%" height="100%" style="max-height: 80vh; background: transparent;">
@@ -604,29 +633,73 @@ idct_block  = cv2.idct(dequantized)</code></pre>
 </svg></div>
 </div>
 
-<!-- 14 JPEG Results -->
+<!-- 16 JPEG Results: Eclipse 2 -->
 <div class="slide future">
-  <h2 class="anim">JPEG: Quality Factor (QF) Impact</h2>
+  <h2 class="anim">JPEG Quality: Eclipse 2</h2>
   <div class="flex-row anim">
     <div class="col center frag-fade" data-show="1">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>Eclipse 2 (QF=50)</strong></p>
+      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=10</strong></p>
+      <div class="img-box" style="width:100%"><img src="solar_eclipse2_JPEG_QF10.png"></div>
+      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">597:1</span> · SSIM: 0.888</span></p>
+    </div>
+    <div class="col center frag-fade" data-show="2">
+      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=50</strong></p>
       <div class="img-box" style="width:100%"><img src="solar_eclipse2_JPEG_QF50.png"></div>
       <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">418:1</span> · SSIM: 0.967</span></p>
     </div>
-    <div class="col center frag-fade" data-show="2">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>Eclipse 1 (QF=50)</strong></p>
-      <div class="img-box" style="width:100%"><img src="solar_eclipse_JPEG_QF50.png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">227:1</span> · SSIM: 0.886</span></p>
-    </div>
     <div class="col center frag-fade" data-show="3">
-      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>Carina Nebula (QF=50)</strong></p>
-      <div class="img-box" style="width:100%"><img src="Carina_Nebula_JPEG_QF50.png"></div>
-      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">100:1</span> · SSIM: 0.953</span></p>
+      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=90</strong></p>
+      <div class="img-box" style="width:100%"><img src="solar_eclipse2_JPEG_QF90.png"></div>
+      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">188:1</span> · SSIM: 0.977</span></p>
     </div>
   </div>
 </div>
 
-<!-- 15 Analysis -->
+<!-- 17 JPEG Results: Eclipse 1 -->
+<div class="slide future">
+  <h2 class="anim">JPEG Quality: Eclipse 1</h2>
+  <div class="flex-row anim">
+    <div class="col center frag-fade" data-show="1">
+      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=10</strong></p>
+      <div class="img-box" style="width:100%"><img src="solar_eclipse_JPEG_QF10.png"></div>
+      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">386:1</span> · SSIM: 0.732</span></p>
+    </div>
+    <div class="col center frag-fade" data-show="2">
+      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=50</strong></p>
+      <div class="img-box" style="width:100%"><img src="solar_eclipse_JPEG_QF50.png"></div>
+      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">228:1</span> · SSIM: 0.886</span></p>
+    </div>
+    <div class="col center frag-fade" data-show="3">
+      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=90</strong></p>
+      <div class="img-box" style="width:100%"><img src="solar_eclipse_JPEG_QF90.png"></div>
+      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">59:1</span> · SSIM: 0.951</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- 18 JPEG Results: Carina Nebula -->
+<div class="slide future">
+  <h2 class="anim">JPEG Quality: Carina Nebula</h2>
+  <div class="flex-row anim">
+    <div class="col center frag-fade" data-show="1">
+      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=10</strong></p>
+      <div class="img-box" style="width:100%"><img src="Carina_Nebula_JPEG_QF10.png"></div>
+      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">172:1</span> · SSIM: 0.877</span></p>
+    </div>
+    <div class="col center frag-fade" data-show="2">
+      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=50</strong></p>
+      <div class="img-box" style="width:100%"><img src="Carina_Nebula_JPEG_QF50.png"></div>
+      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">100:1</span> · SSIM: 0.953</span></p>
+    </div>
+    <div class="col center frag-fade" data-show="3">
+      <p style="font-size:clamp(12px,1.4vw,22px)"><strong>QF=90</strong></p>
+      <div class="img-box" style="width:100%"><img src="Carina_Nebula_JPEG_QF90.png"></div>
+      <p class="sub" style="margin-top:1vh"><span class="stat-pill">CR: <span class="highlight">39:1</span> · SSIM: 0.975</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- 19 Analysis -->
 <div class="slide future">
   <h2 class="anim">Critical Analysis &amp; Trade-offs</h2>
   <p class="anim">Comparing algorithm performance across all datasets:</p>
@@ -668,7 +741,7 @@ idct_block  = cv2.idct(dequantized)</code></pre>
   </div>
 </div>
 
-<!-- 16 Conclusion -->
+<!-- 20 Conclusion -->
 <div class="slide future">
   <h2 class="anim">Comprehensive Final Verdict</h2>
   <div class="anim" style="max-width:95%;margin-top:1.5vh">
